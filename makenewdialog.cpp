@@ -16,6 +16,7 @@ MakeNewDialog::MakeNewDialog(QWidget *parent) : ui(new Ui::Dialog)
     ui->heightEdit->setValidator(validator);
     ui->widthEdit->setText("144");
     ui->heightEdit->setText("144");
+    ui->nameEdit->setText("Untitled");
 }
 
 int MakeNewDialog::levelWidth() const
