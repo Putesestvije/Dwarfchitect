@@ -11,15 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     populateScene();
-    /*QScrollArea *qfr = new QScrollArea;
-    setCentralWidget(qfr);*/
-    /*QVBoxLayout *qvb = new QVBoxLayout();*/
     View *vju = new View();
     vju->view()->setScene(scene);
-    /*qvb->addWidget(vju);*/
-    //vju->setParent(ui->centralWidget);
-    //ui->centralWidget->setLayout(qvb);
-    //ui->scrollArea->setWidget(vju->view());
     setCentralWidget(vju->view());
 }
 
