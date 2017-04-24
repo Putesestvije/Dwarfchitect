@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/forms">
+        <file>newprojectdialog_1.ui</file>
+    </qresource>
+</RCC>

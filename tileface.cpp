@@ -31,10 +31,10 @@ void TileFace::paint(QPainter *painter, const QStyleOptionGraphicsItem *Option, 
 {
     Q_UNUSED(widget);
 
-    QColor fillColor(20, 20, 20);/*Reimplementirati kasnije kada treba da bira boju*/
+    QColor fillColor(255, 255, 255);/*Reimplementirati kasnije kada treba da bira boju*/
 
     QPen oldPen = painter->pen();
-    QPen pen(Qt::white, 1);
+    QPen pen(Qt::black, 1);
     pen.setWidth(0);
 
     QBrush oldBrush = painter->brush();

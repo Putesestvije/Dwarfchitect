@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QGraphicsScene>
 
+
 namespace Ui {
 class MainWindow;
 }
@@ -20,6 +21,10 @@ private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene;
     void populateScene();
+    int tilesX;
+    int tilesY;
+private slots:
+    void makeNew();
 };
 
 #endif // MAINWINDOW_H

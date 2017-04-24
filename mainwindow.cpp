@@ -4,25 +4,21 @@
 #include "view.h"
 #include <QVBoxLayout>
 #include <QScrollArea>
+#include <QDialog>
+#include "makenewdialog.h"
+#include <QPushButton>
+#include <QFormBuilder>
+#include <QFile>
+#include <iostream>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    populateScene();
-    /*QScrollArea *qfr = new QScrollArea;
-    setCentralWidget(qfr);*/
-    /*QVBoxLayout *qvb = new QVBoxLayout();*/
-    View *vju = new View();
-    vju->view()->setScene(scene);
-    /*qvb->addWidget(vju);*/
-    //vju->setParent(ui->centralWidget);
-    //ui->centralWidget->setLayout(qvb);
-    //ui->scrollArea->setWidget(vju->view());
-    setCentralWidget(vju->view());
-}
+    connect(ui->actionNew, &QAction::triggered, this, &MainWindow::makeNew);
 
+}
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -32,33 +28,30 @@ void MainWindow::populateScene()
 {
     scene = new QGraphicsScene(this);
 
-    for (int i = 0; i < 100; i++){
-        for (int j = 0; j < 100; j++){
+    for (int i = 0; i < tilesX; i++){
+        for (int j = 0; j < tilesY; j++){
             QColor qcl(0, 0, 0);
             QGraphicsItem *t = new TileFace(qcl, i, j);
             t->setPos(QPointF(i*12,j*18));
             scene->addItem(t);
         }
     }
-   /* QImage image(":/qt4logo.png");
+}
 
-    // Populate scene
-    int xx = 0;
-    int nitems = 0;
-    for (int i = -11000; i < 11000; i += 110) {
-        ++xx;
-        int yy = 0;
-        for (int j = -7000; j < 7000; j += 70) {
-            ++yy;
-            qreal x = (i + 11000) / 22000.0;
-            qreal y = (j + 7000) / 14000.0;
+void MainWindow::makeNew()
+{
+    int returnCode;
+    MakeNewDialog *makeNew = new MakeNewDialog();
 
-            QColor color(image.pixel(int(image.width() * x), int(image.height() * y)));
-            QGraphicsItem *item = new Chip(color, xx, yy);
-            item->setPos(QPointF(i, j));
-            scene->addItem(item);
+    returnCode  = makeNew->exec();
 
-            ++nitems;
-        }
-    }*/
+    tilesX = makeNew->levelWidth();
+    tilesY = makeNew->levelHeight();
+    if(returnCode){
+        populateScene();
+        View *vju = new View();
+        vju->view()->setScene(scene);
+        setCentralWidget(vju->view());
+    }
+    delete makeNew;
 }
