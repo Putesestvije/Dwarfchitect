@@ -48,8 +48,8 @@ bool MakeNewDialog::isValidInput()
     QMessageBox *msg = new QMessageBox(this);
     msg->setIcon(QMessageBox::Warning);
     QString emptyFieldMsg("Please enter a value in the %1 field%2");
-    QString outOfBoundsMsg("%1 is out of bounds. "
-                           "A number between 1 and %2 is required. "
+    QString outOfBoundsMsg("%1 is out of bounds.\n"
+                           "A number between 1 and %2 is required.\n"
                            "Closest value inserted.");
 
     /*Checking if there is anything in the nameEdits*/
