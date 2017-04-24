@@ -13,7 +13,6 @@ View::View(QWidget *parent)
     layout->addWidget(graphicsView);
     setLayout(layout);
 
-
 }
 
 QGraphicsView *View::view() const

@@ -4,7 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui\
+            designer
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -24,12 +25,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    view.cpp \
-    tileface.cpp
+        mainwindow.cpp\
+        view.cpp\
+        tileface.cpp \
+    makenewdialog.cpp
 
-HEADERS  += mainwindow.h \
-    view.h \
-    tileface.h
 
-FORMS    += mainwindow.ui
+HEADERS  += mainwindow.h\
+            view.h\
+            tileface.h \
+    makenewdialog.h
+
+FORMS    += mainwindow.ui \
+    newprojectdialog_1.ui
+
+RESOURCES += \
+    otherforms.qrc
