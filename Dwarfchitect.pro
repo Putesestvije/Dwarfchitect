@@ -28,13 +28,22 @@ SOURCES += main.cpp\
         mainwindow.cpp\
         view.cpp\
         tileface.cpp \
-    makenewdialog.cpp
+    makenewdialog.cpp \
+    picker.cpp \
+    floor.cpp \
+    site.cpp
 
 
 HEADERS  += mainwindow.h\
             view.h\
             tileface.h \
-    makenewdialog.h
+    makenewdialog.h \
+    picker.h \
+    designations.h \
+    coords.h \
+    floor.h \
+    tileback.h \
+    site.h
 
 FORMS    += mainwindow.ui \
     newprojectdialog_1.ui

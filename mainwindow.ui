@@ -42,7 +42,7 @@
     <property name="title">
      <string>Edit</string>
     </property>
-    <addaction name="actionUndeo"/>
+    <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
     <addaction name="separator"/>
     <addaction name="actionCut"/>
@@ -106,7 +106,7 @@
     <string>Export to Macro</string>
    </property>
   </action>
-  <action name="actionUndeo">
+  <action name="actionUndo">
    <property name="text">
     <string>Undo</string>
    </property>

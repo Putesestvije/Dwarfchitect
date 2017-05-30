@@ -3,7 +3,9 @@
 
 #include <QMainWindow>
 #include <QGraphicsScene>
-
+#include "site.h"
+#include "picker.h"
+#include "designations.h"
 
 namespace Ui {
 class MainWindow;
@@ -23,6 +25,8 @@ private:
     void populateScene();
     int tilesX;
     int tilesY;
+    Picker *_picker;
+    Site *_site;
 private slots:
     void makeNew();
 };

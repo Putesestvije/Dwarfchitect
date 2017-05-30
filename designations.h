@@ -1,0 +1,6 @@
+#ifndef DESIGNATIONS_H
+#define DESIGNATIONS_H
+
+typedef enum {DIG, CHANNEL, UPSTAIRS, DOWNSTIARS, UPDOWNSTAIRS, CLEAR} Designation;
+
+#endif // DESIGNATIONS_H
