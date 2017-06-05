@@ -1,7 +1,10 @@
 #include "picker.h"
 #include <QGraphicsSceneMouseEvent>
+#include <QGraphicsSceneHoverEvent>
 #include <iostream>
 #include <QSet>
+#include <QKeyEvent>
+#include <QGraphicsView>
 
 Picker::Picker()
 {
@@ -16,6 +19,8 @@ Picker::Picker(int width, int height, QVector<QVector<TileFace *> > *faces)
     setZValue(3);
     setFlags(ItemIsSelectable);
     _CurrentDesignation = DIG;
+    setAcceptHoverEvents(true);
+
     //_pending = new QVector<Coords>;
 }
 
@@ -91,4 +96,55 @@ void Picker::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
     Q_UNUSED(event);
     _currentFloor->applyChanges(_pending, _CurrentDesignation);
     _pending.clear();
+}
+
+void Picker::keyPressEvent(QKeyEvent *event)
+{
+    int k = event->key();
+    Qt::KeyboardModifiers q = event->modifiers();
+    if(k == Qt::Key_Z && q == Qt::ControlModifier)
+        emit undo();
+    else if ((k == Qt::Key_Z && q == (Qt::ControlModifier | Qt::ShiftModifier))
+             || (k == Qt::Key_Y && q == Qt::ControlModifier))
+        emit redo();
+    else
+        QGraphicsItem::keyPressEvent(event);
+}
+
+void Picker::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
+    QString position("");
+    int xPos = event->pos().x();
+    int yPos = event->pos().y();
+
+    /* adjusted X and Y coordinates so you can use them
+     * as array indices*/
+    int adjX = xPos/12;
+    int adjY = yPos/12;
+    position.append("(");
+    position.append(QString::number(adjX));
+    position.append(",");
+    position.append(QString::number(adjY));
+    position.append(")");
+
+    emit mousePosition(position);
+}
+
+void Picker::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
+{
+    QString position("");
+    int xPos = event->pos().x();
+    int yPos = event->pos().y();
+
+    /* adjusted X and Y coordinates so you can use them
+     * as array indices*/
+    int adjX = xPos/12;
+    int adjY = yPos/12;
+    position.append("(");
+    position.append(QString::number(adjX));
+    position.append(",");
+    position.append(QString::number(adjY));
+    position.append(")");
+
+    emit mousePosition(position);
 }

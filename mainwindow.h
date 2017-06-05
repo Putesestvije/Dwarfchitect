@@ -7,6 +7,7 @@
 #include "site.h"
 #include "picker.h"
 #include "designations.h"
+#include "view.h"
 
 namespace Ui {
 class MainWindow;
@@ -20,6 +21,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 public slots:
+    void status(QString status);
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene;
@@ -30,6 +32,7 @@ private:
     Picker *_picker;
     Site *_site;
     QProgressBar *progressBar;
+    GraphicsView *_graphicView;
 private slots:
     void makeNew();
     void exportMacro();

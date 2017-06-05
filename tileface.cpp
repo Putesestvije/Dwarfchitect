@@ -33,6 +33,7 @@ QPainterPath TileFace::shape() const
 void TileFace::paint(QPainter *painter, const QStyleOptionGraphicsItem *Option, QWidget *widget)
 {
     Q_UNUSED(widget);
+    Q_UNUSED(Option);
 
     //QColor fillColor(255, 255, 255);/*Reimplementirati kasnije kada treba da bira boju*/
 
@@ -64,6 +65,7 @@ void TileFace::paint(QPainter *painter, const QStyleOptionGraphicsItem *Option, 
 
 void TileFace::setColor(int r, int g, int b, int a)
 {
+    Q_UNUSED(a);
     _color.setRgb(r, g, b);
     update();
     return;

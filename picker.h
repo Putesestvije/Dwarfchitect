@@ -25,12 +25,19 @@ public:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
-
+    void keyPressEvent(QKeyEvent *event);
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+    void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
     QRectF boundingRect() const override;
 
     void matchToFloor();
     Floor *currentFloor() const;
     void setCurrentFloor(Floor *currentFloor);
+
+signals:
+    void undo();
+    void redo();
+    void mousePosition(QString pos);
 
 public slots:
     void sync();

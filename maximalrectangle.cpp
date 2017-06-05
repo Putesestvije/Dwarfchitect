@@ -59,11 +59,12 @@ void MaximalRectangle::plotFloor(Designation d, Floor *f)
         /* after the main algorithm the _bestLL and _bestUR fields
          * should be refering to opposite corners of the largest rectangle
          * to be marked up */
-        std::cout << "found something at (" << _bestLL.x
-                  << "," << _bestLL.y << "), (" << _bestUR.x
-                  << "," << _bestUR.y << ")" << std::endl;
         std::cout.flush();
         emit progessed(area(_bestLL, _bestUR));
+        std::cout << "found something at (" << _bestLL.x
+                  << "," << _bestLL.y << "), (" << _bestUR.x
+                  << "," << _bestUR.y << ")"
+                  << "rectangle #" <<_currRectangle << std::endl;
         if(_plottedSomething)
             plotRectangle(f);
         emit syncFaces();

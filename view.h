@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QGraphicsView>
 #include <QFrame>
+#include <QGraphicsSceneHoverEvent>
 #include <QScrollArea>
 
 class View;
@@ -13,7 +14,17 @@ class GraphicsView : public QGraphicsView
 {
     Q_OBJECT
 public:
-    GraphicsView(View *v) : QGraphicsView(), view(v) { }
+    GraphicsView(){
+        setFocusPolicy(Qt::StrongFocus);
+    }
+    GraphicsView(View *v) : QGraphicsView(), view(v) {
+        setFocusPolicy(Qt::StrongFocus);
+    }
+    void keyPressEvent(QKeyEvent *event);
+
+signals:
+    void undo();
+    void redo();
 
 private:
     View *view;

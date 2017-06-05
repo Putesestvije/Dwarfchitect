@@ -44,7 +44,7 @@ void MakeNewDialog::accept()
 
 bool MakeNewDialog::isValidInput()
 {
-    /*Warning: bunch of dumb boilerplate*/
+    /*Warning: bunch of dumb input field checking*/
 
     QMessageBox *msg = new QMessageBox(this);
     msg->setIcon(QMessageBox::Warning);
