@@ -3,6 +3,7 @@
 /* to be used to relay information which
  * tiles are to be changed*/
 struct Coords {
+    /*and yes, these are bitfields*/
     int x : 10;
     int y : 10;
 
@@ -12,6 +13,8 @@ struct Coords {
         else
             return x < other.x;
     }
+    Coords(){x = 0; y = 0;}
+    Coords(int a, int b){x = a; y = b;}
 };
 
 

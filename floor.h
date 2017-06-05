@@ -29,6 +29,8 @@ public:
 
     void applyChanges(QVector<Coords> &changes, Designation newDes);
     void synchronizeFaces(QVector<QVector <TileFace*> > *faces);
+    QVector<QVector<TileBack> > & tiles();
+
 signals:
     void syncRequired();
 

@@ -24,7 +24,7 @@ class View : public QScrollArea
 public:
     explicit View(QWidget *parent = 0);
 
-    QGraphicsView *view() const;
+    QGraphicsView *gview() const;
 
 private:
     GraphicsView *graphicsView;

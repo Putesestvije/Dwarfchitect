@@ -15,7 +15,7 @@ View::View(QWidget *parent)
 
 }
 
-QGraphicsView *View::view() const
+QGraphicsView *View::gview() const
 {
     return static_cast<QGraphicsView *>(graphicsView);
 }

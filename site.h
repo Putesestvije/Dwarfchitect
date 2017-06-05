@@ -25,6 +25,10 @@ public:
     void moveCurrUp();
     void moveCurrDown();
 
+    Floor *topFloor() const;
+
+    Floor *bottomFloor() const;
+
 signals:
     void syncRequired();
 

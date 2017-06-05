@@ -31,7 +31,9 @@ SOURCES += main.cpp\
     makenewdialog.cpp \
     picker.cpp \
     floor.cpp \
-    site.cpp
+    site.cpp \
+    macroalgorithm.cpp \
+    maximalrectangle.cpp
 
 
 HEADERS  += mainwindow.h\
@@ -43,7 +45,9 @@ HEADERS  += mainwindow.h\
     coords.h \
     floor.h \
     tileback.h \
-    site.h
+    site.h \
+    macroalgorithm.h \
+    maximalrectangle.h
 
 FORMS    += mainwindow.ui \
     newprojectdialog_1.ui

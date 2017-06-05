@@ -22,7 +22,7 @@
      <x>0</x>
      <y>0</y>
      <width>657</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -34,9 +34,9 @@
     <addaction name="actionSave"/>
     <addaction name="actionSave_As"/>
     <addaction name="separator"/>
-    <addaction name="actionExit"/>
+    <addaction name="actionExport_Macro"/>
     <addaction name="separator"/>
-    <addaction name="actionExit_2"/>
+    <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -101,7 +101,7 @@
     <string>Save As...</string>
    </property>
   </action>
-  <action name="actionExit">
+  <action name="actionExport_Macro">
    <property name="text">
     <string>Export to Macro</string>
    </property>
@@ -166,7 +166,7 @@
     <string>License</string>
    </property>
   </action>
-  <action name="actionExit_2">
+  <action name="actionExit">
    <property name="text">
     <string>Exit</string>
    </property>

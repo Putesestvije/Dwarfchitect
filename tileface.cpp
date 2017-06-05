@@ -15,6 +15,7 @@ TileFace::TileFace(const QColor &color, int x, int y)
     setAcceptHoverEvents(true);
     _currentDesigantion = CLEAR;
     _tempDesignation = CLEAR;
+    _rect = -1;
 }
 
 QRectF TileFace::boundingRect() const
@@ -39,6 +40,9 @@ void TileFace::paint(QPainter *painter, const QStyleOptionGraphicsItem *Option, 
     QPen pen(Qt::black, 1);
     pen.setWidth(0);
 
+    QString q = QString::number(_rect);
+
+
     QBrush oldBrush = painter->brush();
     QBrush brush;
     brush.setColor(_color);
@@ -48,6 +52,9 @@ void TileFace::paint(QPainter *painter, const QStyleOptionGraphicsItem *Option, 
     painter->setPen(pen);
 
     painter->drawRect(boundingRect());
+
+    /*uncomment for debugging*/
+    painter->drawText(boundingRect(), q);
 
     painter->setBrush(oldBrush);
     painter->setPen(oldPen);
@@ -80,4 +87,14 @@ Designation TileFace::tempDesignation() const
 void TileFace::setTempDesignation(const Designation &tempDesignation)
 {
     _tempDesignation = tempDesignation;
+}
+
+int TileFace::rect() const
+{
+    return _rect;
+}
+
+void TileFace::setRect(int rect)
+{
+    _rect = rect;
 }

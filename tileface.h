@@ -25,7 +25,15 @@ public:
     Designation tempDesignation() const;
     void setTempDesignation(const Designation &tempDesignation);
 
+    int rect() const;
+    void setRect(int rect);
+
 private:
+    /* coresponds to the tileback's rectangle
+     * used in debugging to check if the plotter
+     * is working properly*/
+    int _rect;
+
     int _x;
     int _y;
     QColor _color;

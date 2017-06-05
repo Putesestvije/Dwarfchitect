@@ -83,6 +83,7 @@ void Floor::synchronizeFaces(QVector<QVector<TileFace *> > *faces)
     for(int i = 0; i < _height; i++)
         for(int j = 0; j < _width; j++){
             (*faces)[i][j]->setCurrentDesigantion(_tiles[i][j].des);
+            (*faces)[i][j]->setRect(_tiles[i][j].rectangle);
             if(_tiles[i][j].des == CLEAR)
                 (*faces)[i][j]->setColor(255,255,255);
             else
@@ -102,4 +103,9 @@ void Floor::setupTiles(int width, int height)
             _tiles[i][j] = t;
         }
     }
+}
+
+QVector<QVector<TileBack> > &Floor::tiles()
+{
+    return _tiles;
 }

@@ -57,12 +57,10 @@ void Picker::mousePressEvent(QGraphicsSceneMouseEvent *event){
     if((xPos >= _width) || (yPos >= _height) ||(xPos < 0) || (yPos < 0)){
         return;
     }
-    if((*_faces)[adjX][adjY]->currentDesigantion() != _CurrentDesignation){
-        (*_faces)[adjX][adjY]->setCurrentDesigantion(_CurrentDesignation);
-        (*_faces)[adjX][adjY]->setColor(128, 128, 0);
-        Coords c;
-        c.x = adjX;
-        c.y = adjY;
+    if((*_faces)[adjY][adjX]->currentDesigantion() != _CurrentDesignation){
+        (*_faces)[adjY][adjX]->setCurrentDesigantion(_CurrentDesignation);
+        (*_faces)[adjY][adjX]->setColor(128, 128, 0);
+        Coords c(adjY, adjX);
         _pending.push_back(c);
     }
 
@@ -81,12 +79,10 @@ void Picker::mouseMoveEvent(QGraphicsSceneMouseEvent *event){
     if((xPos >= _width) || (yPos >= _height) ||(xPos < 0) || (yPos < 0)){
         return;
     }
-    if((*_faces)[adjX][adjY]->currentDesigantion() != _CurrentDesignation){
-        (*_faces)[adjX][adjY]->setCurrentDesigantion(_CurrentDesignation);
-        (*_faces)[adjX][adjY]->setColor(128, 128, 0);
-        Coords c;
-        c.x = adjX;
-        c.y = adjY;
+    if((*_faces)[adjY][adjX]->currentDesigantion() != _CurrentDesignation){
+        (*_faces)[adjY][adjX]->setCurrentDesigantion(_CurrentDesignation);
+        (*_faces)[adjY][adjX]->setColor(128, 128, 0);
+        Coords c(adjY, adjX);
         _pending.push_back(c);
     }
 }

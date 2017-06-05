@@ -117,3 +117,13 @@ void Site::tester()
 {
     std::cout << "Sync getting through" << std::endl;
 }
+
+Floor *Site::bottomFloor() const
+{
+    return _bottomFloor;
+}
+
+Floor *Site::topFloor() const
+{
+    return _topFloor;
+}
