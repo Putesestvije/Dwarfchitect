@@ -45,7 +45,7 @@ public slots:
 private:
     int _width;
     int _height;
-    Designation _CurrentDesignation;
+    Key _CurrentDesignation;
 
     Floor *_currentFloor;
 

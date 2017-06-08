@@ -19,11 +19,11 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *Option, QWidget *widget) Q_DECL_OVERRIDE;
     void setColor(int r, int g, int b, int a = 255);
 
-    Designation currentDesigantion() const;
-    void setCurrentDesigantion(const Designation &currentDesigantion);
+    Key currentDesigantion() const;
+    void setCurrentDesigantion(const Key &currentDesigantion);
 
-    Designation tempDesignation() const;
-    void setTempDesignation(const Designation &tempDesignation);
+    Key tempDesignation() const;
+    void setTempDesignation(const Key &tempDesignation);
 
     int rect() const;
     void setRect(int rect);
@@ -38,8 +38,8 @@ private:
     int _y;
     QColor _color;
 
-    Designation _currentDesigantion;
-    Designation _tempDesignation;
+    Key _currentDesigantion;
+    Key _tempDesignation;
 };
 
 #endif // TILEFACE_H

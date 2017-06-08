@@ -18,7 +18,7 @@ Picker::Picker(int width, int height, QVector<QVector<TileFace *> > *faces)
 {
     setZValue(3);
     setFlags(ItemIsSelectable);
-    _CurrentDesignation = DIG;
+    _CurrentDesignation = D_DIG;
     setAcceptHoverEvents(true);
 
     //_pending = new QVector<Coords>;

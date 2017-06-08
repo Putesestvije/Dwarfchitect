@@ -67,10 +67,10 @@ void Floor::redo()
     }
 }
 
-void Floor::applyChanges(QVector<Coords> &changes, Designation newDes)
+void Floor::applyChanges(QVector<Coords> &changes, Key newDes)
 {
     _undoQueue.push_front(_tiles);
-    if(_undoQueue.size()>50)
+    if(_undoQueue.size()>100)
         _undoQueue.pop_back();
     for(auto c : changes){
         _tiles[c.x][c.y].des = newDes;

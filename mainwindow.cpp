@@ -7,6 +7,7 @@
 #include <iostream>
 #include <QVector>
 #include <QProgressBar>
+#include <QMap>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -101,15 +102,18 @@ void MainWindow::exportMacro()
 {
     //QFile macroFile;
     //TODO Output to file
-    MaximalRectangle maxRec(_site->topFloor(), _width, _height);
+    MaximalRectangle maxRec(_site->topFloor(), _width, _height, this, _projectName);
     progressBar->setMaximum(maxRec.amountOfWork()*2);
-    progressBar->reset();
+    progressBar->setValue(0);
 
     progressBar->show();
     connect(&maxRec, &MaximalRectangle::progessed, this, &MainWindow::progressed);
     connect(&maxRec, &MaximalRectangle::syncFaces, _picker, &Picker::sync);
 
     maxRec.generateMacro();
+
+    std::cout << progressBar->maximum() << " ";
+    std::cout << progressBar->value() << std::endl;
 
     maxRec.clearSite();
     /* uncomment once the whole algorithm works

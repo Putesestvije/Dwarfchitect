@@ -27,7 +27,7 @@ public:
     void undo();
     void redo();
 
-    void applyChanges(QVector<Coords> &changes, Designation newDes);
+    void applyChanges(QVector<Coords> &changes, Key newDes);
     void synchronizeFaces(QVector<QVector <TileFace*> > *faces);
     QVector<QVector<TileBack> > & tiles();
 

@@ -15,7 +15,7 @@ TileFace::TileFace(const QColor &color, int x, int y)
     setAcceptHoverEvents(true);
     _currentDesigantion = CLEAR;
     _tempDesignation = CLEAR;
-    _rect = -1;
+    _rect = 0;
 }
 
 QRectF TileFace::boundingRect() const
@@ -71,22 +71,22 @@ void TileFace::setColor(int r, int g, int b, int a)
     return;
 }
 
-Designation TileFace::currentDesigantion() const
+Key TileFace::currentDesigantion() const
 {
     return _currentDesigantion;
 }
 
-void TileFace::setCurrentDesigantion(const Designation &currentDesigantion)
+void TileFace::setCurrentDesigantion(const Key &currentDesigantion)
 {
     _currentDesigantion = currentDesigantion;
 }
 
-Designation TileFace::tempDesignation() const
+Key TileFace::tempDesignation() const
 {
     return _tempDesignation;
 }
 
-void TileFace::setTempDesignation(const Designation &tempDesignation)
+void TileFace::setTempDesignation(const Key &tempDesignation)
 {
     _tempDesignation = tempDesignation;
 }
