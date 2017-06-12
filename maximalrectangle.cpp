@@ -266,8 +266,8 @@ int MaximalRectangle::findNextRectangle(Floor *f)
         c = bfsQ.dequeue();
         if((f->tiles()[c.x][c.y].rectangle) && !(f->tiles()[c.x][c.y].macroed)){
             rect = f->tiles()[c.x][c.y].rectangle;
-            //counterBfs(f);
-            counterBfs2(f);
+            counterBfs(f);
+            //counterBfs2(f);
             return rect;
         }
         addNeighbors(f, bfsQ, c, true);

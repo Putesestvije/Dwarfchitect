@@ -40,8 +40,10 @@ void Site::addFloorAboveCurr()
                          _height,
                          _currFloor->floorAbove(),
                          _currFloor->floorBelow());
-    if(_currFloor->floorBelow() != nullptr)
+    if(_currFloor->floorAbove() != nullptr)
         _currFloor->floorAbove()->setFloorBelow(f);
+    else
+        _topFloor = f;
     _currFloor->setFloorAbove(f);
     connect(f, &Floor::syncRequired, this, &Site::syncRequired);
     //connect()
@@ -55,6 +57,8 @@ void Site::addFloorBelowCurr()
                          _currFloor->floorBelow());
     if(_currFloor->floorBelow() != nullptr)
         _currFloor->floorBelow()->setFloorAbove(f);
+    else
+        _bottomFloor = f;
     _currFloor->setFloorBelow(f);
     connect(f, &Floor::syncRequired, this, &Site::syncRequired);
 }
