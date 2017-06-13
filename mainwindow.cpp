@@ -73,16 +73,29 @@ void MainWindow::makeNew()
             _site = new Site(_width, _height);
             _picker->setCurrentFloor(_site->currFloor());
 
-            connect(_site, &Site::syncRequired, _picker, &Picker::sync);
-            connect(ui->actionUndo, &QAction::triggered, _site, &Site::undo);
-            connect(ui->actionRedo, &QAction::triggered, _site, &Site::redo);
 
             _graphicView = new GraphicsView();
             _graphicView->setScene(scene);
             centralWidget()->layout()->addWidget(_graphicView);
 
+            connect(_site, &Site::syncRequired, _picker, &Picker::sync);
+            connect(_site, &Site::currFloorChanged, _picker, &Picker::newFloor);
+
+            connect(ui->actionAdd_New_Bottom_Layer, &QAction::triggered, _site, &Site::addNewBottomFloor);
+            connect(ui->actionAdd_New_Top_Layer, &QAction::triggered, _site, &Site::addNewTopFloor);
+            connect(ui->actionAdd_New_Layer_Above_Current, &QAction::triggered, _site, &Site::addFloorAboveCurr);
+            connect(ui->actionAdd_New_Layer_Below_Current, &QAction::triggered, _site, &Site::addFloorBelowCurr);
+
+            connect(ui->actionMove_Up, &QAction::triggered, _site, &Site::moveCurrUp);
+            connect(ui->actionMove_Down, &QAction::triggered, _site, &Site::moveCurrDown);
+
+            connect(ui->actionUndo, &QAction::triggered, _site, &Site::undo);
+            connect(ui->actionRedo, &QAction::triggered, _site, &Site::redo);
+
             connect(_graphicView, &GraphicsView::undo, _site, &Site::undo);
             connect(_graphicView, &GraphicsView::redo, _site, &Site::redo);
+            connect(_graphicView, &GraphicsView::floorUp, _site, &Site::moveCurrUp);
+            connect(_graphicView, &GraphicsView::floorDown, _site, &Site::moveCurrDown);
 
             connect(_picker, &Picker::mousePosition, this, &MainWindow::status);
 
@@ -92,8 +105,6 @@ void MainWindow::makeNew()
             progressBar->setFixedWidth(200);
             progressBar->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
             ui->statusBar->addWidget(progressBar);
-            /*centralWidget()->layout()->addWidget(progressBar);*/
-            //progressBar->hide();
         }
     delete makeNew;
 }
@@ -116,14 +127,19 @@ void MainWindow::exportMacro()
     std::cout << progressBar->value() << std::endl;
 
     maxRec.clearSite();
-    /* uncomment once the whole algorithm works
-     * progressBar->hide(); */
+
+    progressBar->hide();
 
 }
 
 void MainWindow::progressed(int p)
 {
     progressBar->setValue(progressBar->value()+p);
+}
+
+void MainWindow::connectUponNew()
+{
+
 }
 
 

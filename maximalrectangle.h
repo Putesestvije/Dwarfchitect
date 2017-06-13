@@ -27,7 +27,7 @@ signals:
     void progessed(int p);
     void syncFaces();
 private:
-    Floor *_currentFloor;
+    Floor *_topFloor;
     int _width;
     int _height;
     QWidget *_parent;
@@ -51,8 +51,8 @@ private:
     void plotSite();
     void plotFloor(Key d, Floor *f);
     void plotRectangle(Floor *f);
-    void mainAlgorithm(Key d);
-    void updateCache(int x, Key d);
+    void mainAlgorithm(Floor *f, Key d);
+    void updateCache(Floor *f, int x, Key d);
     Coords findStart();
     void generateCommands();
     void generateFloorCommands(Floor *f);

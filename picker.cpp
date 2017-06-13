@@ -49,6 +49,12 @@ void Picker::sync()
     _currentFloor->synchronizeFaces(_faces);
 }
 
+void Picker::newFloor(Floor *f)
+{
+    _currentFloor = f;
+    _currentFloor->synchronizeFaces(_faces);
+}
+
 void Picker::mousePressEvent(QGraphicsSceneMouseEvent *event){
 
     int xPos = event->pos().x();
@@ -94,8 +100,10 @@ void Picker::mouseMoveEvent(QGraphicsSceneMouseEvent *event){
 
 void Picker::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
     Q_UNUSED(event);
-    _currentFloor->applyChanges(_pending, _CurrentDesignation);
-    _pending.clear();
+    if(_pending.size() > 0){
+        _currentFloor->applyChanges(_pending, _CurrentDesignation);
+        _pending.clear();
+    }
 }
 
 void Picker::keyPressEvent(QKeyEvent *event)

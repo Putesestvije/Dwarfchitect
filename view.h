@@ -25,6 +25,8 @@ public:
 signals:
     void undo();
     void redo();
+    void floorUp();
+    void floorDown();
 
 private:
     View *view;

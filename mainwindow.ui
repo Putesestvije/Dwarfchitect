@@ -67,9 +67,24 @@
     <addaction name="actionAbout"/>
     <addaction name="actionLicense"/>
    </widget>
+   <widget class="QMenu" name="menuLayers">
+    <property name="title">
+     <string>Layers</string>
+    </property>
+    <addaction name="actionMove_Up"/>
+    <addaction name="actionMove_Down"/>
+    <addaction name="separator"/>
+    <addaction name="actionAdd_New_Layer_Above_Current"/>
+    <addaction name="actionAdd_New_Layer_Below_Current"/>
+    <addaction name="actionAdd_New_Top_Layer"/>
+    <addaction name="actionAdd_New_Bottom_Layer"/>
+    <addaction name="separator"/>
+    <addaction name="actionDelete_Current_Layer"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
+   <addaction name="menuLayers"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -169,6 +184,41 @@
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionMove_Up">
+   <property name="text">
+    <string>Move Up</string>
+   </property>
+  </action>
+  <action name="actionMove_Down">
+   <property name="text">
+    <string>Move Down</string>
+   </property>
+  </action>
+  <action name="actionAdd_New_Layer_Above_Current">
+   <property name="text">
+    <string>Add New Layer Above Current</string>
+   </property>
+  </action>
+  <action name="actionAdd_New_Layer_Below_Current">
+   <property name="text">
+    <string>Add New Layer Below Current</string>
+   </property>
+  </action>
+  <action name="actionAdd_New_Top_Layer">
+   <property name="text">
+    <string>Add New Top Layer</string>
+   </property>
+  </action>
+  <action name="actionAdd_New_Bottom_Layer">
+   <property name="text">
+    <string>Add New Bottom Layer</string>
+   </property>
+  </action>
+  <action name="actionDelete_Current_Layer">
+   <property name="text">
+    <string>Delete Current Layer</string>
    </property>
   </action>
  </widget>

@@ -37,6 +37,7 @@ private slots:
     void makeNew();
     void exportMacro();
     void progressed(int p);
+    void connectUponNew();
 };
 
 #endif // MAINWINDOW_H

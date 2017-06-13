@@ -16,7 +16,7 @@ MaximalRectangle::MaximalRectangle()
 }
 
 MaximalRectangle::MaximalRectangle(Floor *top, int width, int height, QWidget *parent, QString project)
-    : _currentFloor(top),
+    : _topFloor(top),
       _width(width),
       _height(height),
       _parent(parent),
@@ -66,7 +66,7 @@ void MaximalRectangle::generateMacro()
 
 int MaximalRectangle::amountOfWork()
 {
-    Floor *c = _currentFloor;
+    Floor *c = _topFloor;
     int work = 0;
     while(c != nullptr){
         for(int i = 0; i < _height; i++){
@@ -82,7 +82,8 @@ int MaximalRectangle::amountOfWork()
 
 void MaximalRectangle::plotSite()
 {
-    Floor *f = _currentFloor;
+    Floor *f = _topFloor;
+    int fl = 0;
     while(f != nullptr){
         plotFloor(Key::D_DIG, f);
         plotFloor(Key::D_CHANNEL, f);
@@ -90,7 +91,9 @@ void MaximalRectangle::plotSite()
         plotFloor(Key::D_DOWN_STAIR, f);
         plotFloor(Key::D_UPDOWN_STAIR, f);
         plotFloor(Key::D_RAMP, f);
-        f = _currentFloor->floorBelow();
+        f = f->floorBelow();
+        std::cout << "on floor " << fl << std::endl;
+        fl++;
     }
 
 }
@@ -105,7 +108,7 @@ void MaximalRectangle::plotFloor(Key d, Floor *f)
         _cache.clear();
         for(int i = 0; i <= _height; i++)
             _cache.push_back(0);
-        mainAlgorithm(d);
+        mainAlgorithm(f, d);
         /* after the main algorithm the _bestLL and _bestUR fields
          * should be refering to opposite corners of the largest rectangle
          * to be marked up */
@@ -137,13 +140,13 @@ void MaximalRectangle::plotRectangle(Floor *f)
     _currRectangle++;
 }
 
-void MaximalRectangle::mainAlgorithm(Key d)
+void MaximalRectangle::mainAlgorithm(Floor *f, Key d)
 {
     int widestRect;
     Coords p;
     _rectStack.clear();
     for (int x = _width-1; x > -1; x--){
-        updateCache(x, d);
+        updateCache(f, x, d);
         widestRect = 0;
         for (int y = 0; y <= _height; y++){
             /*placing something on the rectangle stack*/
@@ -172,10 +175,10 @@ void MaximalRectangle::mainAlgorithm(Key d)
     }
 }
 
-void MaximalRectangle::updateCache(int x, Key d)
+void MaximalRectangle::updateCache(Floor *f, int x, Key d)
 {
     for (int i = 0; i < _height; i++){
-        if((_currentFloor->tiles()[i][x].des == d) && (!_currentFloor->tiles()[i][x].rectangle)){
+        if((f->tiles()[i][x].des == d) && (!f->tiles()[i][x].rectangle)){
             _cache[i]++;
             _plottedSomething = true;
         }
@@ -186,7 +189,7 @@ void MaximalRectangle::updateCache(int x, Key d)
 
 Coords MaximalRectangle::findStart()
 {
-    Floor *f = _currentFloor;
+    Floor *f = _topFloor;
     while (f != nullptr){
         for (int i = 0; i < _height; i++)
             for (int j = 0; j < _width; j++)
@@ -199,7 +202,7 @@ Coords MaximalRectangle::findStart()
 void MaximalRectangle::generateCommands()
 {
     _cursor = findStart();
-    Floor *f = _currentFloor;
+    Floor *f = _topFloor;
     while (f != nullptr){
         std::cout << "cursor starting at " << _cursor << std::endl;
         generateFloorCommands(f);
@@ -454,7 +457,7 @@ int MaximalRectangle::area(int rect)
  * setting the tile's containing rectangle and so on.*/
 void MaximalRectangle::clearSite()
 {
-    Floor *c = _currentFloor;
+    Floor *c = _topFloor;
     while(c != nullptr){
         for(int i = 0; i < _height; i++){
             for(int j = 0; j < _width; j++){

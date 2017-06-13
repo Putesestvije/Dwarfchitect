@@ -31,6 +31,7 @@ public:
 
 signals:
     void syncRequired();
+    void currFloorChanged(Floor *f);
 
 public slots:
     void undo();

@@ -39,7 +39,7 @@ void Site::addFloorAboveCurr()
     Floor *f = new Floor(_width,
                          _height,
                          _currFloor->floorAbove(),
-                         _currFloor->floorBelow());
+                         _currFloor);
     if(_currFloor->floorAbove() != nullptr)
         _currFloor->floorAbove()->setFloorBelow(f);
     else
@@ -53,7 +53,7 @@ void Site::addFloorBelowCurr()
 {
     Floor *f = new Floor(_width,
                          _height,
-                         _currFloor->floorAbove(),
+                         _currFloor,
                          _currFloor->floorBelow());
     if(_currFloor->floorBelow() != nullptr)
         _currFloor->floorBelow()->setFloorAbove(f);
@@ -97,14 +97,18 @@ void Site::setCurrFloor(Floor *currFloor)
 
 void Site::moveCurrUp()
 {
-    if(_currFloor->floorAbove())
+    if(_currFloor->floorAbove()){
         _currFloor = _currFloor->floorAbove();
+        emit currFloorChanged(_currFloor);
+    }
 }
 
 void Site::moveCurrDown()
 {
-    if(_currFloor->floorBelow())
+    if(_currFloor->floorBelow()){
         _currFloor = _currFloor->floorBelow();
+        emit currFloorChanged(_currFloor);
+    }
 }
 
 void Site::undo()
