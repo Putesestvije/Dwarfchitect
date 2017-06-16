@@ -2,6 +2,8 @@
 #include <QGridLayout>
 #include <QVBoxLayout>
 #include <QKeyEvent>
+#include <qmath.h>
+#include <iostream>
 
 View::View(QWidget *parent)
     : QScrollArea(parent)
@@ -18,16 +20,7 @@ View::View(QWidget *parent)
 
 void GraphicsView::keyPressEvent(QKeyEvent *event)
 {
-    /* int k = event->key();
-    Qt::KeyboardModifiers q = event->modifiers();
-    if(k == Qt::Key_Z && q == Qt::ControlModifier)
-        emit undo();
-    else if ((k == Qt::Key_Z && q == (Qt::ControlModifier | Qt::ShiftModifier))
-             || (k == Qt::Key_Y && q == Qt::ControlModifier))
-        emit redo();
-    else
-        QGraphicsView::keyPressEvent(event);
-    */
+
     int k = event->key();
     Qt::KeyboardModifiers q = event->modifiers();
 
@@ -56,4 +49,44 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
         }
     else
         QGraphicsView::keyPressEvent(event);
+}
+
+void GraphicsView::wheelEvent(QWheelEvent *event)
+{
+    if(event->modifiers() & Qt::ControlModifier){
+        if(event->delta() > 0)
+            _zoomSlider->setValue(_zoomSlider->value()+6);
+        else if (event->delta() < 0 )
+            _zoomSlider->setValue(_zoomSlider->value()-6);
+        event->accept();
+    } else
+        QGraphicsView::wheelEvent(event);
+
+}
+
+void GraphicsView::setupTransform()
+{
+    qreal scale = qPow(2,  (_zoomSlider->value()- 125) / qreal(50));
+    std::cout << scale << std::endl;
+    QTransform tr = QTransform();
+    tr.scale(scale, scale);
+    if(_isStretched)
+        tr *= _stretch;
+    setTransform(tr);
+}
+
+void GraphicsView::zoomIn()
+{
+    _zoomSlider->setValue(_zoomSlider->value()+6);
+}
+
+void GraphicsView::zoomOut()
+{
+    _zoomSlider->setValue(_zoomSlider->value()-6);
+}
+
+void GraphicsView::stretchToggle(bool s)
+{
+    _isStretched = s;
+    setupTransform();
 }

@@ -97,6 +97,11 @@ void MainWindow::makeNew()
             connect(_graphicView, &GraphicsView::floorUp, _site, &Site::moveCurrUp);
             connect(_graphicView, &GraphicsView::floorDown, _site, &Site::moveCurrDown);
 
+            connect(ui->actionZoom_in, &QAction::triggered, _graphicView, &GraphicsView::zoomIn);
+            connect(ui->actionZoom_out, &QAction::triggered, _graphicView, &GraphicsView::zoomOut);
+
+            connect(ui->actionSquare_Rectangle_render, &QAction::triggered, _graphicView, &GraphicsView::stretchToggle);
+
             connect(_picker, &Picker::mousePosition, this, &MainWindow::status);
 
             progressBar = new QProgressBar();
@@ -111,8 +116,6 @@ void MainWindow::makeNew()
 
 void MainWindow::exportMacro()
 {
-    //QFile macroFile;
-    //TODO Output to file
     MaximalRectangle maxRec(_site->topFloor(), _width, _height, this, _projectName);
     progressBar->setMaximum(maxRec.amountOfWork()*2);
     progressBar->setValue(0);
@@ -129,7 +132,6 @@ void MainWindow::exportMacro()
     maxRec.clearSite();
 
     progressBar->hide();
-
 }
 
 void MainWindow::progressed(int p)

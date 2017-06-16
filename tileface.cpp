@@ -55,7 +55,7 @@ void TileFace::paint(QPainter *painter, const QStyleOptionGraphicsItem *Option, 
     painter->drawRect(boundingRect());
 
     /*uncomment for debugging*/
-    painter->drawText(boundingRect(), q);
+    /*painter->drawText(boundingRect(), q);*/
 
     painter->setBrush(oldBrush);
     painter->setPen(oldPen);

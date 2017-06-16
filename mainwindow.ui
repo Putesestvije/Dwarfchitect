@@ -55,6 +55,7 @@
     </property>
     <addaction name="actionZoom_in"/>
     <addaction name="actionZoom_out"/>
+    <addaction name="actionReset_Zoom"/>
     <addaction name="separator"/>
     <addaction name="actionSquare_Rectangle_render"/>
     <addaction name="actionChange_Base_Color"/>
@@ -148,15 +149,30 @@
   </action>
   <action name="actionZoom_in">
    <property name="text">
-    <string>Zoom in</string>
+    <string>Zoom In</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl++</string>
    </property>
   </action>
   <action name="actionZoom_out">
    <property name="text">
-    <string>Zoom out</string>
+    <string>Zoom Out</string>
+   </property>
+   <property name="statusTip">
+    <string/>
+   </property>
+   <property name="whatsThis">
+    <string>+ 10%</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+-</string>
    </property>
   </action>
   <action name="actionSquare_Rectangle_render">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Square/Rectangle render</string>
    </property>
@@ -167,6 +183,9 @@
    </property>
   </action>
   <action name="actionShow_Hide_Tile_Borders">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Show/Hide Tile Borders</string>
    </property>
@@ -190,10 +209,16 @@
    <property name="text">
     <string>Move Up</string>
    </property>
+   <property name="shortcut">
+    <string>&lt;</string>
+   </property>
   </action>
   <action name="actionMove_Down">
    <property name="text">
     <string>Move Down</string>
+   </property>
+   <property name="shortcut">
+    <string>&gt;</string>
    </property>
   </action>
   <action name="actionAdd_New_Layer_Above_Current">
@@ -219,6 +244,11 @@
   <action name="actionDelete_Current_Layer">
    <property name="text">
     <string>Delete Current Layer</string>
+   </property>
+  </action>
+  <action name="actionReset_Zoom">
+   <property name="text">
+    <string>Reset Zoom</string>
    </property>
   </action>
  </widget>
