@@ -70,8 +70,7 @@ void GraphicsView::setupTransform()
     std::cout << scale << std::endl;
     QTransform tr = QTransform();
     tr.scale(scale, scale);
-    if(_isStretched)
-        tr *= _stretch;
+    tr *= _defaultStretch;
     setTransform(tr);
 }
 
@@ -87,6 +86,13 @@ void GraphicsView::zoomOut()
 
 void GraphicsView::stretchToggle(bool s)
 {
-    _isStretched = s;
+    if (s){
+        QTransform tr;
+        tr.scale(1,1.5);
+        _defaultStretch = tr;
+    } else {
+        QTransform tr;
+        _defaultStretch = tr;
+    }
     setupTransform();
 }

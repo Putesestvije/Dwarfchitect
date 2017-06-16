@@ -20,9 +20,8 @@ public:
         _zoomSlider->setMaximum(125);
         _zoomSlider->setMinimum(0);
         _zoomSlider->setValue(125);
-        _normal = QTransform();
-        _stretch = QTransform();
-        _stretch.scale(1,1.5);
+        QTransform tr;
+        _defaultStretch = tr;
         _isStretched = false;
         connect(_zoomSlider, &QSlider::valueChanged, this, &GraphicsView::setupTransform);
     }
@@ -45,8 +44,7 @@ signals:
 private:
     View *view;
     QSlider *_zoomSlider;
-    QTransform _normal;
-    QTransform _stretch;
+    QTransform _defaultStretch;
     bool _isStretched;
 };
 
