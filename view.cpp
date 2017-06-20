@@ -66,7 +66,7 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
 
 void GraphicsView::setupTransform()
 {
-    qreal scale = qPow(2,  (_zoomSlider->value()- 125) / qreal(50));
+    qreal scale = qPow(2,  (_zoomSlider->value()- 250) / qreal(50));
     std::cout << scale << std::endl;
     QTransform tr = QTransform();
     tr.scale(scale, scale);

@@ -19,7 +19,8 @@ class Picker : public QObject, public QGraphicsItem
 public:
     typedef enum {FREE, LINE, RECT, CIRCLE, BUCKET, SELECT} drawMode;
     Picker();
-    Picker(int width, int height, QVector<QVector<TileFace*> > *faces);
+    Picker(int width, int height, std::vector<std::vector<TileFace*> > *faces);
+    ~Picker();
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
@@ -35,6 +36,7 @@ public:
     void setCurrentFloor(Floor *currentFloor);
 
 signals:
+    void changesMadeToModel();
     void undo();
     void redo();
     void mousePosition(QString pos);
@@ -50,7 +52,7 @@ private:
 
     Floor *_currentFloor;
 
-    QVector<QVector<TileFace*> > *_faces;
+    std::vector<std::vector<TileFace*> > *_faces;
     QVector<Coords> _pending;
 };
 

@@ -28,7 +28,7 @@ public:
     void redo();
 
     void applyChanges(QVector<Coords> &changes, Key newDes);
-    void synchronizeFaces(QVector<QVector <TileFace*> > *faces);
+    void synchronizeFaces(std::vector<std::vector<TileFace *> > *faces);
     QVector<QVector<TileBack> > & tiles();
 
 signals:

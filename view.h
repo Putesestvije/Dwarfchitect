@@ -17,9 +17,9 @@ public:
     GraphicsView(){
         setFocusPolicy(Qt::StrongFocus);
         _zoomSlider = new QSlider();
-        _zoomSlider->setMaximum(125);
+        _zoomSlider->setMaximum(250);
         _zoomSlider->setMinimum(0);
-        _zoomSlider->setValue(125);
+        _zoomSlider->setValue(250);
         QTransform tr;
         _defaultStretch = tr;
         _isStretched = false;

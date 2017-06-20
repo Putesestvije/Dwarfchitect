@@ -78,7 +78,7 @@ void Floor::applyChanges(QVector<Coords> &changes, Key newDes)
     _redoQueue.clear();
 }
 
-void Floor::synchronizeFaces(QVector<QVector<TileFace *> > *faces)
+void Floor::synchronizeFaces(std::vector<std::vector<TileFace *> > *faces)
 {
     for(int i = 0; i < _height; i++)
         for(int j = 0; j < _width; j++){

@@ -32,6 +32,7 @@ private:
     Ui::Dialog *ui;
     int _levelWidth;
     int _levelHeight;
+    QIntValidator *_validator;
 };
 
 #endif // MAKENEWDIALOG_H

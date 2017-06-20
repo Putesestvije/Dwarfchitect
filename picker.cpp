@@ -11,7 +11,7 @@ Picker::Picker()
 
 }
 
-Picker::Picker(int width, int height, QVector<QVector<TileFace *> > *faces)
+Picker::Picker(int width, int height, std::vector<std::vector<TileFace *> > *faces)
     : _width(width),
       _height(height),
       _faces(faces)
@@ -24,10 +24,17 @@ Picker::Picker(int width, int height, QVector<QVector<TileFace *> > *faces)
     //_pending = new QVector<Coords>;
 }
 
+Picker::~Picker()
+{
+    delete _faces;
+}
+
 void Picker::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
-    Q_UNUSED(painter);
+    //Q_UNUSED(painter);
     Q_UNUSED(option);
     Q_UNUSED(widget);
+
+    painter->drawRect(boundingRect());
 }
 
 QRectF Picker::boundingRect() const {
@@ -103,6 +110,7 @@ void Picker::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
     if(_pending.size() > 0){
         _currentFloor->applyChanges(_pending, _CurrentDesignation);
         _pending.clear();
+        emit changesMadeToModel();
     }
 }
 

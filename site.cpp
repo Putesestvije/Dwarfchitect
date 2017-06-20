@@ -20,17 +20,11 @@ Site::Site(int width, int height)
 
 Site::~Site()
 {
-    Floor *curr = _topFloor;
-    Floor *next = nullptr;
-    if(curr->floorBelow() != nullptr)
-        Floor *next = _topFloor->floorBelow();
-
-    while (curr != nullptr){
-        delete curr;
-        if(next != nullptr){
-            curr = next;
-            next = curr->floorBelow();
-        }
+    Floor *c = _topFloor;
+    while (c != nullptr){
+        Floor *f = c->floorBelow();
+        delete c;
+        c = f;
     }
 }
 
@@ -124,6 +118,26 @@ void Site::redo()
 void Site::tester()
 {
     std::cout << "Sync getting through" << std::endl;
+}
+
+int Site::height() const
+{
+    return _height;
+}
+
+void Site::setHeight(int height)
+{
+    _height = height;
+}
+
+int Site::width() const
+{
+    return _width;
+}
+
+void Site::setWidth(int width)
+{
+    _width = width;
 }
 
 Floor *Site::bottomFloor() const

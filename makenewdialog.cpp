@@ -10,10 +10,10 @@ MakeNewDialog::MakeNewDialog(QWidget *parent) : ui(new Ui::Dialog)
 {
     setParent(parent);
     ui->setupUi(this);
-    QIntValidator *validator = new QIntValidator();
-    validator->setBottom(1);
-    ui->widthEdit->setValidator(validator);
-    ui->heightEdit->setValidator(validator);
+    _validator = new QIntValidator();
+    _validator->setBottom(1);
+    ui->widthEdit->setValidator(_validator);
+    ui->heightEdit->setValidator(_validator);
     ui->widthEdit->setText("144");
     ui->heightEdit->setText("144");
     ui->nameEdit->setText("Untitled");
@@ -115,4 +115,5 @@ QString MakeNewDialog::acquiredName() const
 
 MakeNewDialog::~MakeNewDialog(){
     delete ui;
+    delete _validator;
 }

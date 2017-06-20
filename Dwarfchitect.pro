@@ -41,16 +41,19 @@ HEADERS  += mainwindow.h\
             tileface.h \
     makenewdialog.h \
     picker.h \
-    designations.h \
     coords.h \
     floor.h \
     tileback.h \
     site.h \
     macroalgorithm.h \
-    maximalrectangle.h
+    maximalrectangle.h \
+    designations.h
 
 FORMS    += mainwindow.ui \
     newprojectdialog_1.ui
 
 RESOURCES += \
-    otherforms.qrc
+    otherforms.qrc \
+    fonts.qrc
+
+DISTFILES +=

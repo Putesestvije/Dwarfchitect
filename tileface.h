@@ -27,6 +27,7 @@ public:
 
     int rect() const;
     void setRect(int rect);
+    static void setDorfFont(int id);
 
 private:
     /* coresponds to the tileback's rectangle
@@ -37,6 +38,8 @@ private:
     int _x;
     int _y;
     QColor _color;
+
+    static int _dorfFont;
 
     Key _currentDesigantion;
     Key _tempDesignation;

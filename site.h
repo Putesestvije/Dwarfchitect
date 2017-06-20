@@ -29,6 +29,12 @@ public:
 
     Floor *bottomFloor() const;
 
+    int width() const;
+    void setWidth(int width);
+
+    int height() const;
+    void setHeight(int height);
+
 signals:
     void syncRequired();
     void currFloorChanged(Floor *f);

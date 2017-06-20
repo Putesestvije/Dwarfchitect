@@ -34,15 +34,15 @@ void MaximalRectangle::generateMacro()
 {
     plotSite();
     generateCommands();
-    QString currDir = QDir::currentPath();
-    std::cout << currDir.toStdString() << std::endl;
+    /*QString currDir = QDir::currentPath();
+    std::cout << currDir.toStdString() << std::endl;*/
 
-    QString fileName = QFileDialog::getSaveFileName(_parent, tr("Save File"), _project, "Macro Files (*.mak)", nullptr, 0);
-    std::cout << fileName.toStdString() << std::endl;
-    fileName.append(".mak");
+    QString savePath = QFileDialog::getSaveFileName(_parent, tr("Save File"), _project, "Macro Files (*.mak)", nullptr, 0);
+    std::cout << savePath.toStdString() << std::endl;
+    savePath.append(".mak");
 
-    QFile file(fileName);
-    QFileInfo fi(fileName);
+    QFile file(savePath);
+    QFileInfo fi(savePath);
     std::cout << fi.fileName().toStdString() << std::endl;
 
     if(!file.open(QIODevice::WriteOnly | QIODevice::Text)){

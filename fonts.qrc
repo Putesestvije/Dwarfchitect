@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>DF_Curses_8x12.ttf</file>
+    </qresource>
+</RCC>
