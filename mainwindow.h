@@ -6,7 +6,10 @@
 #include <QProgressBar>
 #include <QTextStream>
 #include <exception>
+#include <QSignalMapper>
+#include <QButtonGroup>
 #include <QHash>
+#include <QTextEdit>
 #include "site.h"
 #include "picker.h"
 #include "designations.h"
@@ -42,6 +45,9 @@ private:
     QString _title;
     bool _unsavedChanges;
     void closeEvent(QCloseEvent *event);
+    QSignalMapper *_buttonToDesignation;
+    QButtonGroup *_designationButtons;
+    QTextEdit *_designationPreview;
 
 
     void initCsvMap();
@@ -62,6 +68,7 @@ private slots:
     void openFile();
     void save();
     void saveAs();
+    void changeDesignationPreview(int s);
 };
 
 #endif // MAINWINDOW_H

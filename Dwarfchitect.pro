@@ -54,6 +54,7 @@ FORMS    += mainwindow.ui \
 
 RESOURCES += \
     otherforms.qrc \
-    fonts.qrc
+    fonts.qrc \
+    icons.qrc
 
 DISTFILES +=

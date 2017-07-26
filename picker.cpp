@@ -62,6 +62,13 @@ void Picker::newFloor(Floor *f)
     _currentFloor->synchronizeFaces(_faces);
 }
 
+void Picker::setCurrentDesignation(int k)
+{
+    _CurrentDesignation = static_cast<Key>(k);
+
+    std::cout << "designation changed to " << k << std::endl;
+}
+
 void Picker::mousePressEvent(QGraphicsSceneMouseEvent *event){
 
     int xPos = event->pos().x();

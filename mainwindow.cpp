@@ -1,6 +1,7 @@
 #include <QFontDatabase>
 #include <QFormBuilder>
 #include <QProgressBar>
+#include <QStringList>
 #include <QVBoxLayout>
 #include <QScrollArea>
 #include <QPushButton>
@@ -8,9 +9,11 @@
 #include <QMessageBox>
 #include <QStringList>
 #include <QCloseEvent>
+#include <QTextEdit>
 #include <iostream>
 #include <QDialog>
 #include <QVector>
+#include <QString>
 #include <string>
 #include <QFile>
 #include <QMap>
@@ -39,8 +42,19 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowTitle(_title);
 
     int id = QFontDatabase::addApplicationFont(":/DF_Curses_8x12.ttf");
-    QStringList fonts = QFontDatabase::applicationFontFamilies(id);
-
+    int id2 = QFontDatabase::addApplicationFont(":/Px437_IBM_BIOS.ttf");
+    int id3 = QFontDatabase::addApplicationFont(":/Px437_IBM_BIOS-2y.ttf");
+   /* QStringList fonts = QFontDatabase::applicationFontFamilies(id);
+    for (int i = 0; i < fonts.size(); i++){
+        QString s(fonts.at(i));
+        std::cout << s.toStdString() << std::endl;
+    }
+    fonts = QFontDatabase::applicationFontFamilies(id3);
+    for (int i = 0; i < fonts.size(); i++){
+        QString s(fonts.at(i));
+        std::cout << s.toStdString() << std::endl;
+    }
+*/
     _progressBar = new QProgressBar();
     _progressBar->setMinimum(0);
     _progressBar->setValue(0);
@@ -62,6 +76,116 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionSave, &QAction::triggered, this, &MainWindow::save);
     connect(ui->actionSave_As, &QAction::triggered, this, &MainWindow::saveAs);
     connect(ui->actionExit, &QAction::triggered, this, &MainWindow::close);
+
+    QWidget *qdg = new QWidget();
+    qdg->setFixedHeight(60);
+    qdg->setFixedWidth(175);
+    QHBoxLayout *qhb = new QHBoxLayout();
+    QGridLayout *qgl = new QGridLayout();
+
+    qgl->setVerticalSpacing(15);
+    qgl->setHorizontalSpacing(10);
+
+    QPushButton *digB = new QPushButton();
+    QIcon digI(":/icons/dig.png");
+    digB->setShortcut(QKeySequence("d"));
+    digB->setIcon(digI);
+    digB->setCheckable(true);
+    digB->setChecked(true);
+    digB->setFixedSize(20,20);
+    qgl->addWidget(digB, 0, 0);
+
+    QPushButton *channelB = new QPushButton();
+    QIcon channelI(":/icons/channel.png");
+    channelB->setShortcut(QKeySequence("h"));
+    channelB->setCheckable(true);
+    channelB->setIcon(channelI);
+    channelB->setFixedSize(20,20);
+    qgl->addWidget(channelB, 1, 0);
+
+    QPushButton *upDownStairsB = new QPushButton();
+    QIcon upDownStairsI(":/icons/stairsupdown.png");
+    upDownStairsB->setShortcut(QKeySequence("i"));
+    upDownStairsB->setCheckable(true);
+    upDownStairsB->setIcon(upDownStairsI);
+    upDownStairsB->setFixedSize(20,20);
+    qgl->addWidget(upDownStairsB, 0, 1);
+
+    QPushButton *upStairsB = new QPushButton();
+    QIcon upStairsI(":/icons/stairsup.png");
+    upStairsB->setShortcut(QKeySequence("u"));
+    upStairsB->setCheckable(true);
+    upStairsB->setIcon(upStairsI);
+    upStairsB->setFixedSize(20,20);
+    qgl->addWidget(upStairsB, 1, 1);
+
+    QPushButton *downStairsB = new QPushButton();
+    QIcon downStairsI(":/icons/stairsdown.png");
+    downStairsB->setShortcut(QKeySequence("j"));
+    downStairsB->setCheckable(true);
+    downStairsB->setIcon(downStairsI);
+    downStairsB->setFixedSize(20,20);
+    qgl->addWidget(downStairsB, 0, 2);
+
+    QPushButton *rampUpB = new QPushButton();
+    QIcon rampUpI(":/icons/rampup.png");
+    rampUpB->setShortcut(QKeySequence("r"));
+    rampUpB->setCheckable(true);
+    rampUpB->setIcon(rampUpI);
+    rampUpB->setFixedSize(20,20);
+    qgl->addWidget(rampUpB, 1, 2);
+
+    _buttonToDesignation = new QSignalMapper(this);
+
+    _buttonToDesignation->setMapping(digB, D_DIG);
+    _buttonToDesignation->setMapping(channelB, D_CHANNEL);
+    _buttonToDesignation->setMapping(upDownStairsB, D_UPDOWN_STAIR);
+    _buttonToDesignation->setMapping(upStairsB, D_UP_STAIR);
+    _buttonToDesignation->setMapping(downStairsB, D_DOWN_STAIR);
+    _buttonToDesignation->setMapping(rampUpB, D_RAMP);
+
+
+
+    connect(digB, SIGNAL(toggled(bool)), _buttonToDesignation, SLOT(map()));
+    connect(channelB, SIGNAL(toggled(bool)), _buttonToDesignation, SLOT(map()));
+    connect(upDownStairsB, SIGNAL(toggled(bool)), _buttonToDesignation, SLOT(map()));
+    connect(upStairsB, SIGNAL(toggled(bool)), _buttonToDesignation, SLOT(map()));
+    connect(downStairsB, SIGNAL(toggled(bool)), _buttonToDesignation, SLOT(map()));
+    connect(rampUpB, SIGNAL(toggled(bool)), _buttonToDesignation, SLOT(map()));
+
+    _designationButtons = new QButtonGroup(this);
+
+    _designationButtons->setExclusive(true);
+    _designationButtons->addButton(digB);
+    _designationButtons->addButton(channelB);
+    _designationButtons->addButton(upDownStairsB);
+    _designationButtons->addButton(upStairsB);
+    _designationButtons->addButton(downStairsB);
+    _designationButtons->addButton(rampUpB);
+
+    qhb->addItem(qgl);
+
+    _designationPreview = new QTextEdit(this);
+    _designationPreview->setFixedSize(60, 60);
+    _designationPreview->setReadOnly(true);
+    QFont font = QFont("DF Curses 8x12");
+    font.setPointSize(45);
+    _designationPreview->setFont(font);
+    _designationPreview->setText("d");
+    _designationPreview->setAlignment(Qt::AlignJustify | Qt::AlignHCenter |Qt::AlignVCenter);
+
+    connect(_buttonToDesignation, SIGNAL(mapped(int)), this, SLOT(changeDesignationPreview(int)));
+
+    qhb->addWidget(_designationPreview);
+
+
+    //QLabel *designationPreview = new QLabel();
+
+
+    qdg->setLayout(qhb);
+    ui->designationsToolBar->addWidget(qdg);
+
+    //ui->desigantionsToolBar->set
 }
 
 MainWindow::~MainWindow()
@@ -236,6 +360,8 @@ void MainWindow::connectUponNew()
 
     connect(_picker, &Picker::mousePosition, this, &MainWindow::status);
     connect(_picker, &Picker::changesMadeToModel, this, &MainWindow::toggleUnsavedChanges);
+
+    connect(_buttonToDesignation, SIGNAL(mapped(int)), _picker, SLOT(setCurrentDesignation(int)));
 }
 
 void MainWindow::openFile()
@@ -308,6 +434,31 @@ void MainWindow::saveAs()
     _title.append(" - Dwarfchitect");
     setWindowTitle(_title);
     _unsavedChanges = false;
+}
+
+void MainWindow::changeDesignationPreview(int s)
+{
+    switch (s) {
+    case D_DIG:
+        _designationPreview->setText("d");
+        break;
+    case D_CHANNEL :
+        _designationPreview->setText("h");
+        break;
+    case D_UPDOWN_STAIR :
+        _designationPreview->setText("i");
+        break;
+    case D_UP_STAIR :
+        _designationPreview->setText("u");
+        break;
+    case D_DOWN_STAIR :
+        _designationPreview->setText("j");
+        break;
+    case D_RAMP :
+        _designationPreview->setText("r");
+        break;
+    }
+    _designationPreview->setAlignment(Qt::AlignJustify | Qt::AlignHCenter |Qt::AlignVCenter);
 }
 
 void MainWindow::readCSV(QVector<QVector<QString> > &contents, QTextStream &in)

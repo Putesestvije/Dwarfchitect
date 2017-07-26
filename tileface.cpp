@@ -60,13 +60,37 @@ void TileFace::paint(QPainter *painter, const QStyleOptionGraphicsItem *Option, 
     else
         painter->drawRect(boundingRect());
     QFont oldfont = painter->font();
-    QFont font = QFont("DF Curses 8x12");
-    font.setPointSize(12);
+    QFont font = QFont("Px437 IBM BIOS");
+    font.setPointSize(8);
     painter->setFont(font);
-    /*uncomment for debugging*/
-    if (_currentDesigantion == D_DIG)
-        //painter->drawText(boundingRect(), "d");
+    char c = 30;
+    QString ramp(c);
+    c = 22;
+    QString channel(c);
+    switch (_currentDesigantion){
+    case D_DIG:
         painter->drawText(boundingRect(), Qt::AlignJustify | Qt::AlignHCenter |Qt::AlignVCenter, " ");
+        //painter->drawText(boundingRect(), Qt::AlignJustify | Qt::AlignHCenter |Qt::AlignVCenter, );
+        break;
+    case D_CHANNEL :
+        painter->drawText(boundingRect(), Qt::AlignJustify | Qt::AlignHCenter |Qt::AlignVCenter, channel);
+        break;
+    case D_UPDOWN_STAIR :
+        painter->drawText(boundingRect(), Qt::AlignJustify | Qt::AlignHCenter |Qt::AlignVCenter, "X");
+        break;
+    case D_UP_STAIR :
+        painter->drawText(boundingRect(), Qt::AlignJustify | Qt::AlignHCenter |Qt::AlignVCenter, "<");
+        break;
+    case D_DOWN_STAIR :
+        painter->drawText(boundingRect(), Qt::AlignJustify | Qt::AlignHCenter |Qt::AlignVCenter, ">");
+        break;
+    case D_RAMP :
+        painter->drawText(boundingRect(), Qt::AlignJustify | Qt::AlignHCenter |Qt::AlignVCenter, ramp);
+        break;
+    default:
+        break;
+    }
+
 
     painter->setFont(oldfont);
     painter->setBrush(oldBrush);

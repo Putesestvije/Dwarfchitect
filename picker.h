@@ -44,6 +44,7 @@ signals:
 public slots:
     void sync();
     void newFloor(Floor *f);
+    void setCurrentDesignation(int k);
 
 private:
     int _width;

@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>DF_Curses_8x12.ttf</file>
+        <file>Px437_IBM_BIOS.ttf</file>
+        <file>Px437_IBM_BIOS-2y.ttf</file>
     </qresource>
 </RCC>
