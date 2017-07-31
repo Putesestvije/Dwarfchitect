@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/channel.png</file>
+        <file>images/clear.png</file>
+        <file>images/dig.png</file>
+        <file>images/rampup.png</file>
+        <file>images/stairsdown.png</file>
+        <file>images/stairsup.png</file>
+        <file>images/stairsupdown.png</file>
+    </qresource>
+</RCC>

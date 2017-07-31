@@ -12,7 +12,7 @@ struct TileBack{
     bool bfs;
     bool macroed;
     TileBack(){
-        des = CLEAR;
+        des = D_CLEAR;
         /*-1 stands for belongs to no rectangle*/
         rectangle = 0;
         /*true once the macro designating its rectangle is made*/

@@ -6,5 +6,6 @@
         <file>icons/stairsdown.png</file>
         <file>icons/stairsup.png</file>
         <file>icons/stairsupdown.png</file>
+        <file>icons/clear.png</file>
     </qresource>
 </RCC>

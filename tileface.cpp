@@ -17,8 +17,8 @@ TileFace::TileFace(const QColor &color, int x, int y)
 
     setFlags(ItemIsSelectable);
     setAcceptHoverEvents(true);
-    _currentDesigantion = CLEAR;
-    _tempDesignation = CLEAR;
+    _currentDesigantion = D_CLEAR;
+    _tempDesignation = D_CLEAR;
     _rect = 0;
 }
 
@@ -41,7 +41,8 @@ void TileFace::paint(QPainter *painter, const QStyleOptionGraphicsItem *Option, 
     /*if (_x == 0 && _y==0)
         std::cout << Option->levelOfDetailFromTransform(painter->worldTransform()) << std::endl;*/
 
-    //QColor fillColor(255, 255, 255);/*Reimplement later for th ecorrect color choice*/
+    if(_currentDesigantion == D_CLEAR)
+        _color.setRgb(255, 255, 255);
 
     QPen oldPen = painter->pen();
     QPen pen(Qt::black, 1);

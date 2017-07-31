@@ -84,7 +84,7 @@ void Floor::synchronizeFaces(std::vector<std::vector<TileFace *> > *faces)
         for(int j = 0; j < _width; j++){
             (*faces)[i][j]->setCurrentDesigantion(_tiles[i][j].des);
             (*faces)[i][j]->setRect(_tiles[i][j].rectangle);
-            if(_tiles[i][j].des == CLEAR)
+            if(_tiles[i][j].des == D_CLEAR)
                 (*faces)[i][j]->setColor(255,255,255);
             else
                 (*faces)[i][j]->setColor(128,128,0);

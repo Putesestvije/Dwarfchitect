@@ -71,7 +71,7 @@ int MaximalRectangle::amountOfWork()
     while(c != nullptr){
         for(int i = 0; i < _height; i++){
             for(int j = 0; j < _width; j++){
-                if(c->tiles()[i][j].des != CLEAR)
+                if(c->tiles()[i][j].des != D_CLEAR)
                     work++;
             }
         }
@@ -193,7 +193,7 @@ Coords MaximalRectangle::findStart()
     while (f != nullptr){
         for (int i = 0; i < _height; i++)
             for (int j = 0; j < _width; j++)
-                if(f->tiles()[i][j].des != CLEAR)
+                if(f->tiles()[i][j].des != D_CLEAR)
                     return Coords(i,j);
     }
     return Coords(); /*shouldn't reach this but the compiler warns me since the other return is in a loop*/
@@ -481,7 +481,7 @@ void MaximalRectangle::initDirs()
     _directions[0][1] = UP;
     _directions[0][2] = UP_RIGHT;
     _directions[1][0] = LEFT;
-    _directions[1][1] = CLEAR;
+    _directions[1][1] = D_CLEAR;
     _directions[1][2] = RIGHT;
     _directions[2][0] = DOWN_LEFT;
     _directions[2][1] = DOWN;

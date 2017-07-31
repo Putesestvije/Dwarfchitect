@@ -25,6 +25,18 @@ public:
         _isStretched = false;
         connect(_zoomSlider, &QSlider::valueChanged, this, &GraphicsView::setupTransform);
     }
+
+    GraphicsView(QWidget *parent) : _parent(parent){
+        setFocusPolicy(Qt::StrongFocus);
+        _zoomSlider = new QSlider();
+        _zoomSlider->setMaximum(250);
+        _zoomSlider->setMinimum(0);
+        _zoomSlider->setValue(250);
+        QTransform tr;
+        _defaultStretch = tr;
+        _isStretched = false;
+        connect(_zoomSlider, &QSlider::valueChanged, this, &GraphicsView::setupTransform);
+    }
     GraphicsView(View *v) : QGraphicsView(), view(v) {
         setFocusPolicy(Qt::StrongFocus);
     }
@@ -46,6 +58,7 @@ private:
     QSlider *_zoomSlider;
     QTransform _defaultStretch;
     bool _isStretched;
+    QWidget *_parent;
 };
 
 

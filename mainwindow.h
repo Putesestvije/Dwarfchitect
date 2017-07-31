@@ -47,7 +47,7 @@ private:
     void closeEvent(QCloseEvent *event);
     QSignalMapper *_buttonToDesignation;
     QButtonGroup *_designationButtons;
-    QTextEdit *_designationPreview;
+    QTextEdit *_designationPreviewold;
 
 
     void initCsvMap();
