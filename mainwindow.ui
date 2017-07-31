@@ -56,7 +56,7 @@
          <item row="4" column="1">
           <widget class="QLabel" name="label_4">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -78,7 +78,7 @@
          <item row="6" column="1">
           <widget class="QLabel" name="label_6">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -107,6 +107,9 @@
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color : rgb(210, 210, 210)</string>
            </property>
            <property name="frameShape">
             <enum>QFrame::StyledPanel</enum>
@@ -140,6 +143,9 @@
             <iconset resource="images.qrc">
              <normaloff>:/images/stairsup.png</normaloff>:/images/stairsup.png</iconset>
            </property>
+           <property name="shortcut">
+            <string>U</string>
+           </property>
            <property name="checkable">
             <bool>true</bool>
            </property>
@@ -159,6 +165,9 @@
            <property name="icon">
             <iconset resource="images.qrc">
              <normaloff>:/images/stairsupdown.png</normaloff>:/images/stairsupdown.png</iconset>
+           </property>
+           <property name="shortcut">
+            <string/>
            </property>
            <property name="checkable">
             <bool>true</bool>
@@ -180,15 +189,18 @@
             <iconset resource="images.qrc">
              <normaloff>:/images/channel.png</normaloff>:/images/channel.png</iconset>
            </property>
+           <property name="shortcut">
+            <string>H</string>
+           </property>
            <property name="checkable">
             <bool>true</bool>
            </property>
           </widget>
          </item>
-         <item row="0" column="1" alignment="Qt::AlignLeft">
+         <item row="0" column="1">
           <widget class="QLabel" name="label">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -224,6 +236,9 @@
            <property name="text">
             <string>r</string>
            </property>
+           <property name="shortcut">
+            <string>R</string>
+           </property>
            <property name="checkable">
             <bool>true</bool>
            </property>
@@ -232,7 +247,7 @@
          <item row="7" column="1">
           <widget class="QLabel" name="label_7">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -348,7 +363,7 @@
          <item row="3" column="1">
           <widget class="QLabel" name="label_3">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -364,7 +379,7 @@
          <item row="2" column="1">
           <widget class="QLabel" name="label_2">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -377,7 +392,7 @@
            </property>
           </widget>
          </item>
-         <item row="8" column="0" colspan="2">
+         <item row="8" column="0" colspan="2" alignment="Qt::AlignHCenter">
           <widget class="QTextEdit" name="designationPreview">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -406,8 +421,8 @@
             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:72pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'DF Curses 8x12';&quot;&gt;d&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DF Curses 8x12'; font-size:72pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;d&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="textInteractionFlags">
             <set>Qt::NoTextInteraction</set>
@@ -516,7 +531,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>657</width>
-     <height>17</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
