@@ -318,6 +318,9 @@
             <iconset resource="images.qrc">
              <normaloff>:/images/dig.png</normaloff>:/images/dig.png</iconset>
            </property>
+           <property name="shortcut">
+            <string>D</string>
+           </property>
            <property name="checkable">
             <bool>true</bool>
            </property>
