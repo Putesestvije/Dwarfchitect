@@ -158,6 +158,9 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     if (_unsavedChanges){
         QMessageBox msgBox;
+        QFont dorfs("DF Curses 8x12");
+        dorfs.setPointSize(12);
+        msgBox.setFont(dorfs);
         msgBox.setText("The document has been modified.");
         msgBox.setInformativeText("Do you want to save your changes?");
         msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
@@ -503,13 +506,13 @@ return newSite;
 
 void MainWindow::errorMsg(const char* s)
 {
-QString ss(s);
-QMessageBox *msg = new QMessageBox(this);
-msg->setIcon(QMessageBox::Warning);
-msg->setText(ss);
-msg->exec();
-delete msg;
-return;
+    QString ss(s);
+    QMessageBox *msg = new QMessageBox();
+    msg->setIcon(QMessageBox::Warning);
+    msg->setText(ss);
+    msg->exec();
+    delete msg;
+    return;
 }
 
 int MainWindow::findCSVWidth(QVector<QVector<QString> > &contents)
@@ -605,6 +608,9 @@ bool MainWindow::saveUponNewOrOpen()
 {
 if(_unsavedChanges){
     QMessageBox msgBox;
+    QFont dorfs("DF Curses 8x12");
+    dorfs.setPointSize(12);
+    msgBox.setFont(dorfs);
     msgBox.setText("The document has been modified.");
     msgBox.setInformativeText("Do you want to save your changes?");
     msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);

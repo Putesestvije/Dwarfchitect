@@ -44,6 +44,9 @@
          <property name="leftMargin">
           <number>3</number>
          </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
          <property name="rightMargin">
           <number>0</number>
          </property>
@@ -167,7 +170,7 @@
              <normaloff>:/images/stairsupdown.png</normaloff>:/images/stairsupdown.png</iconset>
            </property>
            <property name="shortcut">
-            <string/>
+            <string>I</string>
            </property>
            <property name="checkable">
             <bool>true</bool>
@@ -291,6 +294,9 @@
            </property>
            <property name="text">
             <string>j</string>
+           </property>
+           <property name="shortcut">
+            <string>J</string>
            </property>
            <property name="checkable">
             <bool>true</bool>
@@ -558,6 +564,8 @@ p, li { white-space: pre-wrap; }
      <font>
       <family>DF Curses 8x12</family>
       <pointsize>12</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
      </font>
     </property>
     <property name="title">
