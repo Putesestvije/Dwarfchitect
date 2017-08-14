@@ -594,7 +594,7 @@ p, li { white-space: pre-wrap; }
       <item>
        <widget class="GraphicsView" name="graphicsView">
         <property name="sizeAdjustPolicy">
-         <enum>QAbstractScrollArea::AdjustIgnored</enum>
+         <enum>QAbstractScrollArea::AdjustToContents</enum>
         </property>
         <property name="sceneRect">
          <rectf>
@@ -605,10 +605,10 @@ p, li { white-space: pre-wrap; }
          </rectf>
         </property>
         <property name="transformationAnchor">
-         <enum>QGraphicsView::AnchorViewCenter</enum>
+         <enum>QGraphicsView::AnchorUnderMouse</enum>
         </property>
         <property name="resizeAnchor">
-         <enum>QGraphicsView::AnchorViewCenter</enum>
+         <enum>QGraphicsView::AnchorUnderMouse</enum>
         </property>
         <property name="viewportUpdateMode">
          <enum>QGraphicsView::SmartViewportUpdate</enum>
@@ -713,7 +713,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>657</width>
-     <height>17</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

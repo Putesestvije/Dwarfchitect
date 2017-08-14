@@ -305,6 +305,7 @@ void MainWindow::connectUponNew()
 
     connect(ui->toggleGrabButton, &QPushButton::toggled, this, &MainWindow::toggleGrabMode);
 
+    ui->pencilButton->toggle();
 }
 
 void MainWindow::openFile()
