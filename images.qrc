@@ -7,5 +7,7 @@
         <file>images/stairsdown.png</file>
         <file>images/stairsup.png</file>
         <file>images/stairsupdown.png</file>
+        <file>images/grab.png</file>
+        <file>images/pencil.png</file>
     </qresource>
 </RCC>

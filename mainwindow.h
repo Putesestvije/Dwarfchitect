@@ -13,7 +13,7 @@
 #include "site.h"
 #include "picker.h"
 #include "designations.h"
-#include "view.h"
+#include "graphicsview.h"
 
 namespace Ui {
 class MainWindow;
@@ -47,6 +47,7 @@ private:
     void closeEvent(QCloseEvent *event);
     QSignalMapper *_buttonToDesignation;
     QButtonGroup *_designationButtons;
+    QButtonGroup *_drawButtons;
     QTextEdit *_designationPreviewold;
 
 
@@ -69,6 +70,7 @@ private slots:
     void save();
     void saveAs();
     void changeDesignationPreview(int s);
+    void toggleGrabMode(bool grabbing);
 };
 
 #endif // MAINWINDOW_H

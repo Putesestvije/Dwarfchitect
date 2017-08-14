@@ -23,7 +23,7 @@
 #include "makenewdialog.h"
 #include "mainwindow.h"
 #include "tileface.h"
-#include "view.h"
+#include "graphicsview.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -42,6 +42,8 @@ MainWindow::MainWindow(QWidget *parent) :
     int id = QFontDatabase::addApplicationFont(":/DF_Curses_8x12.ttf");
     int id2 = QFontDatabase::addApplicationFont(":/Px437_IBM_BIOS.ttf");
     int id3 = QFontDatabase::addApplicationFont(":/Px437_IBM_BIOS-2y.ttf");
+
+    /*for debugging fonts*/
    /* QStringList fonts = QFontDatabase::applicationFontFamilies(id);
     for (int i = 0; i < fonts.size(); i++){
         QString s(fonts.at(i));
@@ -107,8 +109,15 @@ MainWindow::MainWindow(QWidget *parent) :
     _designationButtons->addButton(ui->rampUpButton);
     _designationButtons->addButton(ui->clearButton);
 
+    _drawButtons = new QButtonGroup(this);
+
+    _drawButtons->setExclusive(true);
+    _drawButtons->addButton(ui->toggleGrabButton);
+    _drawButtons->addButton(ui->pencilButton);
 
     connect(_buttonToDesignation, SIGNAL(mapped(int)), this, SLOT(changeDesignationPreview(int)));
+
+    ui->graphicsView->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
 
 }
 
@@ -134,24 +143,24 @@ void MainWindow::toggleUnsavedChanges()
 
 void MainWindow::populateScene()
 {
-    std::vector<std::vector<TileFace*> > *f = new std::vector<std::vector<TileFace*> >();
-    f->resize(_height);
+    std::vector<std::vector<TileFace*> > *faces = new std::vector<std::vector<TileFace*> >();
+    faces->resize(_height);
     for(int i = 0; i < _height; i++)
-        (*f)[i].resize(_width);
-    _picker = new Picker(_width * 12, _height * 12,  f);
+        (*faces)[i].resize(_width);
+    _picker = new Picker(_width * 12, _height * 12,  faces);
     _picker->setPos(0, 0);
 
-    _scene = new QGraphicsScene(this);
-    _scene->addItem(_picker);
+
     for (int i = 0; i < _height; i++){
         for (int j = 0; j < _width; j++){
             QColor qcl(255, 255, 255);
             TileFace *t = new TileFace(qcl, i, j);
             t->setPos(QPointF(j*12,i*12));
             _scene->addItem(t);
-            (*f)[i][j] = t;
+            (*faces)[i][j] = t;
         }
     }
+    _scene->addItem(_picker);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -202,9 +211,9 @@ void MainWindow::initCsvMap()
 void MainWindow::makeNew()
 {
 
-    /* this function might be misleading, it returns
+    /* saveUponNewOrOpen might be misleading, it returns
      * true when you want to proceed with making a
-     * new project wheter you save old one or not
+     * new project whether you save the old one or not
      * and false when you click cancel*/
     if(!saveUponNewOrOpen())
         return;
@@ -219,14 +228,15 @@ void MainWindow::makeNew()
         _height = makeNew->levelHeight();
         _projectName = makeNew->acquiredName();
         QGraphicsScene *oldScene = _scene;
+        _scene = new QGraphicsScene(0, 0, _width*12, _height*12);
         populateScene();
+        ui->graphicsView->setScene(_scene);
         ui->digButton->setChecked(true);
         _picker->setCurrentDesignation(D_DIG);
-        ui->graphicsView->setScene(_scene);
-        if (oldScene)
+        if (oldScene != nullptr)
            delete oldScene;
 
-        if(_site)
+        if(_site != nullptr)
            delete _site;
         _site = new Site(_width, _height);
         _picker->setCurrentFloor(_site->currFloor());
@@ -239,6 +249,7 @@ void MainWindow::makeNew()
 
     }
     delete makeNew;
+
 }
 
 void MainWindow::exportMacro()
@@ -291,13 +302,16 @@ void MainWindow::connectUponNew()
     connect(_picker, &Picker::changesMadeToModel, this, &MainWindow::toggleUnsavedChanges);
 
     connect(_buttonToDesignation, SIGNAL(mapped(int)), _picker, SLOT(setCurrentDesignation(int)));
+
+    connect(ui->toggleGrabButton, &QPushButton::toggled, this, &MainWindow::toggleGrabMode);
+
 }
 
 void MainWindow::openFile()
 {
-    /* this function might be misleading, it returns
+    /* saveUponNewOrOpen might be misleading, it returns
      * true when you want to proceed with making a
-     * new project wheter you save old one or not
+     * new project whether you save the old one or not
      * and false when you click cancel*/
     if(!saveUponNewOrOpen())
         return;
@@ -332,6 +346,7 @@ void MainWindow::openFile()
     _width = _site->width();
     _height = _site->height();
 
+    _scene = new QGraphicsScene(0, 0, _width*12, _height*12);
     populateScene();
     ui->digButton->setChecked(true);
     _picker->setCurrentDesignation(D_DIG);
@@ -345,6 +360,8 @@ void MainWindow::openFile()
     _picker->sync();
 
 }
+
+//TODO: combine save and save as into one function somehow
 
 void MainWindow::save()
 {
@@ -395,112 +412,124 @@ void MainWindow::changeDesignationPreview(int s)
     ui->designationPreview->setAlignment(Qt::AlignJustify | Qt::AlignHCenter |Qt::AlignVCenter);
 }
 
-void MainWindow::readCSV(QVector<QVector<QString> > &contents, QTextStream &in)
+void MainWindow::toggleGrabMode(bool grabbing)
 {
-QVector<QString> row;
-QString s = QString();
-QChar c;
-while (!in.atEnd()){
-    in >> c;
-    switch (c.toLatin1()) {
-    case ',':
-        row.push_back(s);
-        s = QString();
-        break;
-    case '\n':
-        row.push_back(s);
-        s = QString();
-        contents.push_back(row);
-        row.clear();
-        break;
-    default:
-        s.append(c);
+    if(grabbing){
+        //std::cout << "GRABBING" << std::endl;
+        ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
+        ui->graphicsView->setInteractive(false);
+    } else {
+        ui->graphicsView->setDragMode(QGraphicsView::NoDrag);
+        ui->graphicsView->setInteractive(true);
     }
 }
-if (contents.empty())
-    throw "The CSV file is empty!";
+
+void MainWindow::readCSV(QVector<QVector<QString> > &contents, QTextStream &in)
+{
+    QVector<QString> row;
+    QString s = QString();
+    QChar c;
+    while (!in.atEnd()){
+        in >> c;
+        switch (c.toLatin1()) {
+        case ',':
+            row.push_back(s);
+            s = QString();
+            break;
+        case '\n':
+            row.push_back(s);
+            s = QString();
+            contents.push_back(row);
+            row.clear();
+            break;
+        default:
+            s.append(c);
+        }
+    }
+    if (contents.empty())
+        throw "The CSV file is empty!";
 }
 
 /*kinda lenghty function, I'll see if I can break it down later*/
 Site* MainWindow::parseCSV(QVector<QVector<QString> > &contents)
 {
-/*checking if every row has the same number of columns*/
+    /*checking if every row has the same number of columns*/
 
-//#>
-/*Calculating the width and height of the site*/
-int width = findCSVWidth(contents);
-int height = findCSVHeight(contents);
+    //#>
+    /*Calculating the width and height of the site*/
+    int width = findCSVWidth(contents);
+    int height = findCSVHeight(contents);
 
-std::cout << height << ", " << width << std::endl;
+    std::cout << height << ", " << width << std::endl;
 
-if(height == 0 || width == 0)
-    throw ("The file only contains a header!");
+    if(height == 0 || width == 0)
+        throw ("The file only contains a header!");
 
-Site *newSite = new Site(width, height);
-Floor *f = newSite->currFloor();
-int floorH = 0;
-int floorW = 0;
-QVector<QString> row;
-QString s;
-/* some extra care while parsing the first row because of the quickfort
- * stadnard header */
-row = contents.takeFirst();
-s = row.takeFirst().trimmed();
+    Site *newSite = new Site(width, height);
+    Floor *f = newSite->currFloor();
+    int floorH = 0;
+    int floorW = 0;
+    QVector<QString> row;
+    QString s;
+    /* some extra care while parsing the first row because of the quickfort
+     * stadnard header */
+    row = contents.takeFirst();
+    s = row.takeFirst().trimmed();
 
-if(s.startsWith("#build") || s.startsWith("\"#build")
-        ||s.startsWith("#query") || s.startsWith("\"#query"))
-    throw "Can't parse a building/querying csv file!";
-else if( s.startsWith("#dig") || s.startsWith("\"#dig"))
-    ;
-else if(s.length() < 2){
-    f->tiles()[floorH][floorW].des = _csvMap[s];
-    floorW++;
-    while(!row.empty()){
-        s = row.takeFirst().trimmed();
+    if(s.startsWith("#build") || s.startsWith("\"#build")
+            ||s.startsWith("#query") || s.startsWith("\"#query"))
+        throw "Can't parse a building/querying csv file!";
+    else if( s.startsWith("#dig") || s.startsWith("\"#dig"))
+        ;
+    else if(s.length() < 2){
         f->tiles()[floorH][floorW].des = _csvMap[s];
         floorW++;
-    }
-}
-
-floorW = 0;
-floorH = 0;
-
-/*main parsing loop*/
-Key k;
-while (!contents.empty()){
-    row = contents.takeFirst();
-    while (!row.empty()){
-        s = row.takeFirst().trimmed();
-        if(_csvMap.contains(s))
-            k = _csvMap[s];
-        else
-            throw "Unknow designation in file!";
-        switch (k) {
-        case DOWN_Z :
-            if(floorW !=0 || floorH != height)
-                throw "New floor command out of place in CSV file!";
-            if (!contents.empty()){
-                row = contents.takeFirst();
-                floorH = 0;
-                floorW = 0;
-                newSite->addFloorBelowCurr();
-                newSite->moveCurrDown();
-                f = newSite->currFloor();
-                break;
-            }
-        case D_CLEAR :
-            floorW++;
-            break;
-        default :
-            f->tiles()[floorH][floorW].des = k;
+        while(!row.empty()){
+            s = row.takeFirst().trimmed();
+            f->tiles()[floorH][floorW].des = _csvMap[s];
             floorW++;
         }
     }
-    floorH++;
-    floorW = 0;
-}
 
-return newSite;
+    floorW = 0;
+    floorH = 0;
+
+    /*main parsing loop*/
+    Key k;
+    while (!contents.empty()){
+        row = contents.takeFirst();
+        while (!row.empty()){
+            s = row.takeFirst().trimmed();
+            if(_csvMap.contains(s))
+                k = _csvMap[s];
+            else
+                throw "Unknow designation in file!";
+            switch (k) {
+            case DOWN_Z :
+                if(floorW !=0 || floorH != height)
+                    throw "New floor command out of place in CSV file!";
+                if (!contents.empty()){
+                    row = contents.takeFirst();
+                    floorH = 0;
+                    floorW = 0;
+                    newSite->addFloorBelowCurr();
+                    newSite->moveCurrDown();
+                    f = newSite->currFloor();
+                    break;
+                }
+            case D_CLEAR :
+                floorW++;
+                break;
+            default :
+                f->tiles()[floorH][floorW].des = k;
+                floorW++;
+            }
+        }
+        floorH++;
+        floorW = 0;
+    }
+
+    return newSite;
 
 }
 
@@ -565,43 +594,43 @@ return height;
 
 void MainWindow::saveProper()
 {
-Floor *c = _site->topFloor();
-//_savePath.append(".csv");
-QString withExt = QString(_savePath);
-QFile file(withExt.append(".csv"));
+    Floor *c = _site->topFloor();
+    //_savePath.append(".csv");
+    QString withExt = QString(_savePath);
+    QFile file(withExt.append(".csv"));
 
-if(!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)){
-    QMessageBox *msg = new QMessageBox(this);
-    msg->setIcon(QMessageBox::Warning);
-    msg->setText("Couldn't Open the File!");
-    delete msg;
-    return;
-}
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)){
+        QMessageBox *msg = new QMessageBox(this);
+        msg->setIcon(QMessageBox::Warning);
+        msg->setText("Couldn't Open the File!");
+        delete msg;
+        return;
+    }
 
-QTextStream out(&file);
+    QTextStream out(&file);
 
-out << "#dig";
-for (int i = 1; i < _width; i++)
-    out << ", ";
-out << '\n';
-while (c != nullptr){
-    for (int i = 0; i < _height; i++){
-        //out << _csvMap.key(c->tiles()[i][0].des);
-        out << (c->tiles()[i][0].des == D_CLEAR ? " " : _csvMap.key(c->tiles()[i][0].des));
-        for (int j = 1; j < _width; j++){
-            //out << "," <<_csvMap.key(c->tiles()[i][j].des);
-            out << "," << (c->tiles()[i][j].des == D_CLEAR ? " " : _csvMap.key(c->tiles()[i][j].des));
+    out << "#dig";
+    for (int i = 1; i < _width; i++)
+        out << ", ";
+    out << '\n';
+    while (c != nullptr){
+        for (int i = 0; i < _height; i++){
+            //out << _csvMap.key(c->tiles()[i][0].des);
+            out << (c->tiles()[i][0].des == D_CLEAR ? " " : _csvMap.key(c->tiles()[i][0].des));
+            for (int j = 1; j < _width; j++){
+                //out << "," <<_csvMap.key(c->tiles()[i][j].des); clean this
+                out << "," << (c->tiles()[i][j].des == D_CLEAR ? " " : _csvMap.key(c->tiles()[i][j].des));
+            }
+            out << '\n';
         }
-        out << '\n';
+        if(c->floorBelow()){
+            out << "#>";
+            for (int i = 1; i < _width; i++)
+                out << "," << "#";
+            out << '\n';
+        }
+        c = c->floorBelow();
     }
-    if(c->floorBelow()){
-        out << "#>";
-        for (int i = 1; i < _width; i++)
-            out << "," << "#";
-        out << '\n';
-    }
-    c = c->floorBelow();
-}
 }
 
 bool MainWindow::saveUponNewOrOpen()

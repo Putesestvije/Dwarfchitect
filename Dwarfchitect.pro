@@ -26,18 +26,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         mainwindow.cpp\
-        view.cpp\
         tileface.cpp \
     makenewdialog.cpp \
     picker.cpp \
     floor.cpp \
     site.cpp \
     macroalgorithm.cpp \
-    maximalrectangle.cpp
+    maximalrectangle.cpp \
+    graphicsview.cpp
 
 
 HEADERS  += mainwindow.h\
-            view.h\
             tileface.h \
     makenewdialog.h \
     picker.h \
@@ -47,7 +46,8 @@ HEADERS  += mainwindow.h\
     site.h \
     macroalgorithm.h \
     maximalrectangle.h \
-    designations.h
+    designations.h \
+    graphicsview.h
 
 FORMS    += mainwindow.ui \
     newprojectdialog_1.ui

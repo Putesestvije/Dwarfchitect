@@ -88,7 +88,7 @@ void Picker::mousePressEvent(QGraphicsSceneMouseEvent *event){
         Coords c(adjY, adjX);
         _pending.push_back(c);
     }
-
+    //QGraphicsItem::mousePressEvent(event);
 }
 
 void Picker::mouseMoveEvent(QGraphicsSceneMouseEvent *event){

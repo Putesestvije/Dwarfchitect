@@ -1,21 +1,40 @@
-#include "view.h"
-#include <QGridLayout>
-#include <QVBoxLayout>
+#include "graphicsview.h"
 #include <QKeyEvent>
+#include <QWheelEvent>
 #include <qmath.h>
 #include <iostream>
 
-View::View(QWidget *parent)
-    : QScrollArea(parent)
+GraphicsView::GraphicsView(){
+    setFocusPolicy(Qt::StrongFocus);
+    _zoomSlider = new QSlider();
+    _zoomSlider->setMaximum(250);
+    _zoomSlider->setMinimum(0);
+    _zoomSlider->setValue(250);
+    _defaultTransform = transform();
+    _isStretched = false;
+    connect(_zoomSlider, &QSlider::valueChanged, this, &GraphicsView::setupTransform);
+}
+
+GraphicsView::GraphicsView(QWidget *parent) :
+    _parent(parent){
+    setFocusPolicy(Qt::StrongFocus);
+    _zoomSlider = new QSlider();
+    _zoomSlider->setMaximum(250);
+    _zoomSlider->setMinimum(0);
+    _zoomSlider->setValue(250);
+    _defaultTransform = transform();
+    _isStretched = false;
+    connect(_zoomSlider, &QSlider::valueChanged, this, &GraphicsView::setupTransform);
+}
+
+void GraphicsView::mousePressEvent(QMouseEvent *event)
 {
-    //setFrameStyle(StyledPanel);
-    graphicsView = new GraphicsView(this);
-    graphicsView->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
-/*
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->addWidget(graphicsView);
-    setLayout(layout);
-*/
+    QGraphicsView::mousePressEvent(event);
+}
+
+void GraphicsView::mouseMoveEvent(QMouseEvent *event)
+{
+    QGraphicsView::mouseMoveEvent(event);
 }
 
 void GraphicsView::keyPressEvent(QKeyEvent *event)
@@ -67,10 +86,10 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
 void GraphicsView::setupTransform()
 {
     qreal scale = qPow(2,  (_zoomSlider->value()- 250) / qreal(50));
-    std::cout << scale << std::endl;
+    //std::cout << scale << std::endl;
+
     QTransform tr = QTransform();
-    tr.scale(scale, scale);
-    tr *= _defaultStretch;
+    tr.scale(scale,scale);
     setTransform(tr);
 }
 
@@ -89,10 +108,11 @@ void GraphicsView::stretchToggle(bool s)
     if (s){
         QTransform tr;
         tr.scale(1,1.5);
-        _defaultStretch = tr;
+        _defaultTransform = tr;
     } else {
         QTransform tr;
-        _defaultStretch = tr;
+        _defaultTransform = tr;
     }
     setupTransform();
 }
+
