@@ -241,7 +241,7 @@
             </size>
            </property>
            <property name="text">
-            <string>j</string>
+            <string>h</string>
            </property>
            <property name="shortcut">
             <string>H</string>
@@ -788,7 +788,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>657</width>
-     <height>17</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
