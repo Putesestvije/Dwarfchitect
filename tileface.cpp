@@ -43,6 +43,8 @@ void TileFace::paint(QPainter *painter, const QStyleOptionGraphicsItem *Option, 
 
     if(_currentDesigantion == D_CLEAR)
         _color.setRgb(255, 255, 255);
+    else
+        _color.setRgb(128, 128, 0);
 
     QPen oldPen = painter->pen();
     QPen pen(Qt::black, 1);
@@ -108,12 +110,12 @@ void TileFace::setColor(int r, int g, int b, int a)
     return;
 }
 
-Key TileFace::currentDesigantion() const
+Key TileFace::currentDesignation() const
 {
     return _currentDesigantion;
 }
 
-void TileFace::setCurrentDesigantion(const Key &currentDesigantion)
+void TileFace::setCurrentDesignation(const Key &currentDesigantion)
 {
     _currentDesigantion = currentDesigantion;
 }

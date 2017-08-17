@@ -90,6 +90,7 @@ void GraphicsView::setupTransform()
 
     QTransform tr = QTransform();
     tr.scale(scale,scale);
+    tr *= _defaultTransform;
     setTransform(tr);
 }
 

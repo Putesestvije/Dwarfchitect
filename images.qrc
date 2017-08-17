@@ -9,5 +9,7 @@
         <file>images/stairsupdown.png</file>
         <file>images/grab.png</file>
         <file>images/pencil.png</file>
+        <file>images/sqr.png</file>
+        <file>images/circle.png</file>
     </qresource>
 </RCC>

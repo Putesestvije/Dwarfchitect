@@ -19,8 +19,8 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *Option, QWidget *widget) Q_DECL_OVERRIDE;
     void setColor(int r, int g, int b, int a = 255);
 
-    Key currentDesigantion() const;
-    void setCurrentDesigantion(const Key &currentDesigantion);
+    Key currentDesignation() const;
+    void setCurrentDesignation(const Key &currentDesignation);
 
     Key tempDesignation() const;
     void setTempDesignation(const Key &tempDesignation);

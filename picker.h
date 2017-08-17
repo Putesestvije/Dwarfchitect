@@ -45,11 +45,23 @@ public slots:
     void sync();
     void newFloor(Floor *f);
     void setCurrentDesignation(int k);
+    void setDrawMode(int d);
+    void setBrushType(int b);
+    void setupBrush(int size);
 
 private:
+    void drawFreeHand(QGraphicsSceneMouseEvent *event);
+    void drawLine(QGraphicsSceneMouseEvent *event);
+    void setupSquareBrush();
+    void setupCircleBrush();
+    void applyBrush(Coords c);
+
     int _width;
     int _height;
     Key _CurrentDesignation;
+    DrawMode _drawMode;
+    BrushType _brushType;
+    QVector <QVector <Coords> > _brush;
 
     Floor *_currentFloor;
 

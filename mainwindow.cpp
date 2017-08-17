@@ -10,6 +10,7 @@
 #include <QStringList>
 #include <QCloseEvent>
 #include <QTextEdit>
+#include <QSpinBox>
 #include <iostream>
 #include <QDialog>
 #include <QVector>
@@ -109,11 +110,34 @@ MainWindow::MainWindow(QWidget *parent) :
     _designationButtons->addButton(ui->rampUpButton);
     _designationButtons->addButton(ui->clearButton);
 
+    _buttonToDrawMode = new QSignalMapper();
+
+    _buttonToDrawMode->setMapping(ui->pencilButton, M_FREEHAND);
+    _buttonToDrawMode->setMapping(ui->lineButton, M_LINE);
+
+    connect(ui->pencilButton, SIGNAL(toggled(bool)), _buttonToDrawMode, SLOT(map()));
+    connect(ui->lineButton, SIGNAL(toggled(bool)), _buttonToDrawMode, SLOT(map()));
+
+    _buttonToBrushType = new QSignalMapper();
+
+    _buttonToBrushType->setMapping(ui->squareBrushButton, B_SQUARE);
+    _buttonToBrushType->setMapping(ui->circularBrushButton, B_CIRCLE);
+
+    connect(ui->squareBrushButton, SIGNAL(toggled(bool)), _buttonToBrushType, SLOT(map()));
+    connect(ui->circularBrushButton, SIGNAL(toggled(bool)), _buttonToBrushType, SLOT(map()));
+
     _drawButtons = new QButtonGroup(this);
 
     _drawButtons->setExclusive(true);
     _drawButtons->addButton(ui->toggleGrabButton);
     _drawButtons->addButton(ui->pencilButton);
+    _drawButtons->addButton(ui->lineButton);
+
+    _brushButtons = new QButtonGroup();
+
+    _brushButtons->setExclusive(true);
+    _brushButtons->addButton(ui->squareBrushButton);
+    _brushButtons->addButton(ui->circularBrushButton);
 
     connect(_buttonToDesignation, SIGNAL(mapped(int)), this, SLOT(changeDesignationPreview(int)));
 
@@ -302,10 +326,18 @@ void MainWindow::connectUponNew()
     connect(_picker, &Picker::changesMadeToModel, this, &MainWindow::toggleUnsavedChanges);
 
     connect(_buttonToDesignation, SIGNAL(mapped(int)), _picker, SLOT(setCurrentDesignation(int)));
+    connect(_buttonToDrawMode, SIGNAL(mapped(int)), _picker, SLOT(setDrawMode(int)));
+    connect(_buttonToBrushType, SIGNAL(mapped(int)), _picker, SLOT(setBrushType(int)));
 
     connect(ui->toggleGrabButton, &QPushButton::toggled, this, &MainWindow::toggleGrabMode);
 
+    connect(ui->brushSizeSpinBox, SIGNAL(valueChanged(int)), _picker, SLOT(setupBrush(int)));
+
+    ui->digButton->toggle();
     ui->pencilButton->toggle();
+    ui->squareBrushButton->toggle();
+    _picker->setBrushType(B_SQUARE);
+    _picker->setupBrush(1);
 }
 
 void MainWindow::openFile()

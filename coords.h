@@ -18,6 +18,10 @@ struct Coords {
     Coords operator +(Coords &other){
         return Coords(x+other.x, y+other.y);
     }
+
+    Coords operator -(Coords &other){
+        return Coords(x-other.x, y-other.y);
+    }
     bool operator==(Coords other){
         if (!(x == other.x))
             return false;

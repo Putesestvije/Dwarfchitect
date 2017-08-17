@@ -66,50 +66,101 @@ void Picker::setCurrentDesignation(int k)
 {
     _CurrentDesignation = static_cast<Key>(k);
 
-    std::cout << "designation changed to " << k << std::endl;
+    //std::cout << "designation changed to " << k << std::endl;
+}
+
+void Picker::setDrawMode(int d)
+{
+    _drawMode = static_cast<DrawMode>(d);
+
+    //std::cout << "draw mode changed to " << d << std::endl;
+}
+
+void Picker::setBrushType(int b)
+{
+    _brushType = static_cast<BrushType>(b);
+}
+
+void Picker::setupBrush(int size)
+{
+    //std::cout << "given size " << size << std::endl;
+
+    _brush.resize(size);
+    for (int i = 0; i < size; i++)
+        _brush[i].resize(size);
+
+    if (_brushType == B_SQUARE)
+        setupSquareBrush();
+    else if(_brushType == B_CIRCLE)
+        setupSquareBrush();
+}
+
+void Picker::drawFreeHand(QGraphicsSceneMouseEvent *event)
+{
+    int xPos = event->pos().x();
+    int yPos = event->pos().y();
+
+    /* adjusted X and Y coordinates so you can use them
+     * as array indices*/
+    int adjX = xPos/12;
+    int adjY = yPos/12;
+
+    if((xPos >= _width) || (yPos >= _height) ||(xPos < 0) || (yPos < 0)){
+        return;
+    }
+    Coords c(adjX, adjY);
+    applyBrush(c);
+}
+
+void Picker::drawLine(QGraphicsSceneMouseEvent *event)
+{
+
+}
+
+void Picker::setupSquareBrush()
+{
+    int s = _brush.size();
+
+    for (int i = 0; i < s; i++){
+        for (int j =0; j < s; j++){
+            _brush[i][j] = Coords(i - (s/2), j - (s/2));
+        }
+    }
+}
+
+void Picker::setupCircleBrush()
+{
+
+}
+
+void Picker::applyBrush(Coords c)
+{
+    for(int i = 0; i < _brush.size(); i++)
+        for(int j = 0; j < _brush.size(); j++){
+            int adjY = _brush[i][j].y + c.y;
+            int adjX = _brush[i][j].x + c.x;
+            if((adjY >= _height/12) || (adjX >= _width/12) ||
+                    (adjY < 0) || (adjX < 0))
+                continue;
+            else {
+                if((*_faces)[adjY][adjX]->currentDesignation() != _CurrentDesignation){
+                    (*_faces)[adjY][adjX]->setColor(128, 128, 0);
+                    (*_faces)[adjY][adjX]->setCurrentDesignation(_CurrentDesignation);
+                    Coords a(adjY, adjX);
+                    _pending.push_back(a);
+                }
+            }
+        }
 }
 
 void Picker::mousePressEvent(QGraphicsSceneMouseEvent *event){
 
-    int xPos = event->pos().x();
-    int yPos = event->pos().y();
-
-    /* adjusted X and Y coordinates so you can use them
-     * as array indices*/
-    int adjX = xPos/12;
-    int adjY = yPos/12;
-
-    if((xPos >= _width) || (yPos >= _height) ||(xPos < 0) || (yPos < 0)){
-        return;
-    }
-    if((*_faces)[adjY][adjX]->currentDesigantion() != _CurrentDesignation){
-        (*_faces)[adjY][adjX]->setCurrentDesigantion(_CurrentDesignation);
-        (*_faces)[adjY][adjX]->setColor(128, 128, 0);
-        Coords c(adjY, adjX);
-        _pending.push_back(c);
-    }
-    //QGraphicsItem::mousePressEvent(event);
+    drawFreeHand(event);
 }
 
 void Picker::mouseMoveEvent(QGraphicsSceneMouseEvent *event){
-    int xPos = event->pos().x();
-    int yPos = event->pos().y();
 
-    /* adjusted X and Y coordinates so you can use them
-     * as array indices*/
-    int adjX = xPos/12;
-    int adjY = yPos/12;
-
-
-    if((xPos >= _width) || (yPos >= _height) ||(xPos < 0) || (yPos < 0)){
-        return;
-    }
-    if((*_faces)[adjY][adjX]->currentDesigantion() != _CurrentDesignation){
-        (*_faces)[adjY][adjX]->setCurrentDesigantion(_CurrentDesignation);
-        (*_faces)[adjY][adjX]->setColor(128, 128, 0);
-        Coords c(adjY, adjX);
-        _pending.push_back(c);
-    }
+    drawFreeHand(event);
 }
 
 void Picker::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
@@ -120,6 +171,8 @@ void Picker::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
         emit changesMadeToModel();
     }
 }
+
+
 
 void Picker::keyPressEvent(QKeyEvent *event)
 {

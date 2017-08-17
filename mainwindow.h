@@ -46,8 +46,11 @@ private:
     bool _unsavedChanges;
     void closeEvent(QCloseEvent *event);
     QSignalMapper *_buttonToDesignation;
+    QSignalMapper *_buttonToDrawMode;
+    QSignalMapper *_buttonToBrushType;
     QButtonGroup *_designationButtons;
     QButtonGroup *_drawButtons;
+    QButtonGroup *_brushButtons;
     QTextEdit *_designationPreviewold;
 
 
