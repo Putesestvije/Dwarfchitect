@@ -331,13 +331,13 @@ void MainWindow::connectUponNew()
 
     connect(ui->toggleGrabButton, &QPushButton::toggled, this, &MainWindow::toggleGrabMode);
 
-    connect(ui->brushSizeSpinBox, SIGNAL(valueChanged(int)), _picker, SLOT(setupBrush(int)));
+    connect(ui->brushSizeSpinBox, SIGNAL(valueChanged(int)), _picker, SLOT(resizeBrush(int)));
 
     ui->digButton->toggle();
     ui->pencilButton->toggle();
     ui->squareBrushButton->toggle();
     _picker->setBrushType(B_SQUARE);
-    _picker->setupBrush(1);
+    _picker->resizeBrush(1);
 }
 
 void MainWindow::openFile()

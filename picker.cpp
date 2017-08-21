@@ -79,20 +79,24 @@ void Picker::setDrawMode(int d)
 void Picker::setBrushType(int b)
 {
     _brushType = static_cast<BrushType>(b);
+    setupBrush();
 }
 
-void Picker::setupBrush(int size)
+void Picker::setupBrush()
 {
-    //std::cout << "given size " << size << std::endl;
-
-    _brush.resize(size);
-    for (int i = 0; i < size; i++)
-        _brush[i].resize(size);
-
     if (_brushType == B_SQUARE)
         setupSquareBrush();
     else if(_brushType == B_CIRCLE)
-        setupSquareBrush();
+        setupCircleBrush();
+}
+
+void Picker::resizeBrush(int size)
+{
+    _brush.resize(size);
+    for (int i = 0; i < size; i++)
+        _brush[i].resize(size);
+    //std::cout << "given size " << size << std::endl;
+    setupBrush();
 }
 
 void Picker::drawFreeHand(QGraphicsSceneMouseEvent *event)
@@ -130,7 +134,31 @@ void Picker::setupSquareBrush()
 
 void Picker::setupCircleBrush()
 {
+    int s = _brush.size();
 
+    //for both the width and the height of the circle
+    int center = 100 * s - 1;
+
+    int radiusSqr = (center * center);
+
+    int tileX, tileY;
+
+    int dx, dy, distSqr;
+
+    for (int i = 0; i < s; i++)
+        for (int j = 0; j < s; j++){
+            tileX = 100 + 200*j - 1;
+            tileY = 100 + 200*i - 1;;
+            dx = tileX - center;
+            dy = tileY - center;
+            distSqr = dx * dx + dy * dy;
+
+            if(distSqr <= radiusSqr)
+                _brush[i][j] = Coords(i-(s/2), j-(s/2));
+            else
+                _brush[i][j] = Coords(0, 0);
+
+        }
 }
 
 void Picker::applyBrush(Coords c)

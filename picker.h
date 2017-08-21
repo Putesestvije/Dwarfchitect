@@ -47,7 +47,8 @@ public slots:
     void setCurrentDesignation(int k);
     void setDrawMode(int d);
     void setBrushType(int b);
-    void setupBrush(int size);
+    void setupBrush();
+    void resizeBrush(int size);
 
 private:
     void drawFreeHand(QGraphicsSceneMouseEvent *event);
