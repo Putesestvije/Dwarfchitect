@@ -139,7 +139,7 @@ void Picker::setupCircleBrush()
     //for both the width and the height of the circle
     int center = 100 * s - 1;
 
-    int radiusSqr = (center * center);
+    int radiusSqr = ((center-50) * (center-50)) ;
 
     int tileX, tileY;
 
@@ -153,7 +153,7 @@ void Picker::setupCircleBrush()
             dy = tileY - center;
             distSqr = dx * dx + dy * dy;
 
-            if(distSqr <= radiusSqr)
+            if(distSqr < radiusSqr)
                 _brush[i][j] = Coords(i-(s/2), j-(s/2));
             else
                 _brush[i][j] = Coords(0, 0);
