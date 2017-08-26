@@ -56,6 +56,7 @@ private:
     void setupSquareBrush();
     void setupCircleBrush();
     void applyBrush(Coords c);
+    void markWithBrush(Coords c);
 
     int _width;
     int _height;
@@ -63,6 +64,10 @@ private:
     DrawMode _drawMode;
     BrushType _brushType;
     QVector <QVector <Coords> > _brush;
+    QVector <Coords> _underConstruction;
+    Coords UC;
+    Coords _fixedPoint;
+    Coords _mobilePoint;
 
     Floor *_currentFloor;
 

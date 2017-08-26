@@ -20,6 +20,8 @@ Picker::Picker(int width, int height, std::vector<std::vector<TileFace *> > *fac
     setFlags(ItemIsSelectable);
     _CurrentDesignation = D_DIG;
     setAcceptHoverEvents(true);
+    //change the next line or remove it completely later
+    UC = Coords(0, 0);
 
     //_pending = new QVector<Coords>;
 }
@@ -118,6 +120,42 @@ void Picker::drawFreeHand(QGraphicsSceneMouseEvent *event)
 
 void Picker::drawLine(QGraphicsSceneMouseEvent *event)
 {
+    int xPos = event->pos().x();
+    int yPos = event->pos().y();
+
+    /* adjusted X and Y coordinates so you can use them
+     * as array indices*/
+    int adjX = xPos/12;
+    int adjY = yPos/12;
+
+    if((xPos >= _width) || (yPos >= _height) ||(xPos < 0) || (yPos < 0)){
+        return;
+    }
+
+    Coords m = Coords(adjY, adjX);
+
+    if(m == _mobilePoint)
+        ;
+    else {
+        _mobilePoint = m;
+        _underConstruction.pop_back();
+        _underConstruction.push_back(m);
+        std::cout << "Mobile changed" << std::endl;
+    }
+
+
+    Coords c = Coords(adjX, adjY);
+    if(!(UC == c)){
+        (*_faces)[UC.x][UC.y]->setUnderConstruction(false);
+        (*_faces)[UC.x][UC.y]->setTempDesignation((*_faces)[UC.x][UC.y]->currentDesignation());
+        (*_faces)[c.y][c.x]->setTempDesignation(_CurrentDesignation);
+        (*_faces)[c.y][c.x]->setUnderConstruction(true);
+        /* the following line forces the tileface to repaint itself,
+         * otherwise it would repaint only after the cursor leaves the
+         * window */
+        (*_faces)[c.y][c.x]->setColor(128, 128, 0);
+        UC = Coords(c.y,c.x);
+    }
 
 }
 
@@ -172,6 +210,9 @@ void Picker::applyBrush(Coords c)
                 continue;
             else {
                 if((*_faces)[adjY][adjX]->currentDesignation() != _CurrentDesignation){
+                    /* the following line forces the tileface to repaint itself,
+                     * otherwise it would repaint only after the cursor leaves the
+                     * window */
                     (*_faces)[adjY][adjX]->setColor(128, 128, 0);
                     (*_faces)[adjY][adjX]->setCurrentDesignation(_CurrentDesignation);
                     Coords a(adjY, adjX);
@@ -181,21 +222,84 @@ void Picker::applyBrush(Coords c)
         }
 }
 
-void Picker::mousePressEvent(QGraphicsSceneMouseEvent *event){
-
-    drawFreeHand(event);
+void Picker::markWithBrush(Coords c)
+{
+    for(int i = 0; i < _brush.size(); i++)
+        for(int j = 0; j < _brush.size(); j++){
+            int adjY = _brush[i][j].y + c.y;
+            int adjX = _brush[i][j].x + c.x;
+            if((adjY >= _height/12) || (adjX >= _width/12) ||
+                    (adjY < 0) || (adjX < 0))
+                continue;
+            else {
+                if((*_faces)[adjY][adjX]->tempDesignation() != _CurrentDesignation){
+                    /* the following line forces the tileface to repaint itself,
+                     * otherwise it would repaint only after the cursor leaves the
+                     * window */
+                    (*_faces)[adjY][adjX]->setColor(128, 128, 0);
+                    (*_faces)[adjY][adjX]->setTempDesignation(_CurrentDesignation);
+                    (*_faces)[adjY][adjX]->setUnderConstruction(true);
+                    Coords a(adjY, adjX);
+                    _underConstruction.push_back(a);
+                }
+            }
+        }
 }
 
-void Picker::mouseMoveEvent(QGraphicsSceneMouseEvent *event){
+void Picker::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    int xPos = event->pos().x();
+    int yPos = event->pos().y();
 
-    drawFreeHand(event);
+    /* adjusted X and Y coordinates so you can use them
+     * as array indices*/
+    int adjX = xPos/12;
+    int adjY = yPos/12;
+
+    _fixedPoint = Coords(adjY, adjX);
+    _mobilePoint = Coords(adjY, adjX);
+
+    switch (_drawMode){
+    case M_FREEHAND :
+        drawFreeHand(event);
+        break;
+    case M_LINE :
+        _underConstruction.clear();
+        _underConstruction.push_back(_fixedPoint);
+        _underConstruction.push_back(_mobilePoint);
+        drawLine(event);
+        break;
+    }
 }
 
-void Picker::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
+void Picker::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+    switch (_drawMode){
+    case M_FREEHAND :
+        drawFreeHand(event);
+        break;
+    case M_LINE :
+        drawLine(event);
+        break;
+    }
+}
+
+void Picker::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
     Q_UNUSED(event);
     if(_pending.size() > 0){
         _currentFloor->applyChanges(_pending, _CurrentDesignation);
         _pending.clear();
+        emit changesMadeToModel();
+        //NE UNDERCONSTRUCTION, DRUGI NEKI VEKTOR TREBA
+    } else if(_underConstruction.size() > 0){
+        _currentFloor->applyChanges(_underConstruction, _CurrentDesignation);
+        for (auto c : _underConstruction){
+            (*_faces)[c.x][c.y]->setTempDesignation((*_faces)[c.x][c.y]->currentDesignation());
+            (*_faces)[c.x][c.y]->setUnderConstruction(false);
+            (*_faces)[c.x][c.y]->setCurrentDesignation(_CurrentDesignation);
+        }
+        _underConstruction.clear();
         emit changesMadeToModel();
     }
 }

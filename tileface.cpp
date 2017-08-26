@@ -20,6 +20,7 @@ TileFace::TileFace(const QColor &color, int x, int y)
     _currentDesigantion = D_CLEAR;
     _tempDesignation = D_CLEAR;
     _rect = 0;
+    _underConstruction = false;
 }
 
 QRectF TileFace::boundingRect() const
@@ -41,7 +42,7 @@ void TileFace::paint(QPainter *painter, const QStyleOptionGraphicsItem *Option, 
     /*if (_x == 0 && _y==0)
         std::cout << Option->levelOfDetailFromTransform(painter->worldTransform()) << std::endl;*/
 
-    if(_currentDesigantion == D_CLEAR)
+    if(_currentDesigantion == D_CLEAR && _tempDesignation == D_CLEAR)
         _color.setRgb(255, 255, 255);
     else
         _color.setRgb(128, 128, 0);
@@ -70,7 +71,19 @@ void TileFace::paint(QPainter *painter, const QStyleOptionGraphicsItem *Option, 
     QString ramp(c);
     c = 22;
     QString channel(c);
-    switch (_currentDesigantion){
+
+    Key designationToBePainted;
+
+   /* if (_underConstruction){
+        designationToBePainted = _tempDesignation;
+        std::cout << "TEMP DES" << std::endl;
+    }
+    else{
+        designationToBePainted = _currentDesigantion;
+        std::cout << "CLEAR" << std::endl;
+    }
+*/
+    switch (designationToBePainted){
     case D_DIG:
         painter->drawText(boundingRect(), Qt::AlignJustify | Qt::AlignHCenter |Qt::AlignVCenter, " ");
         //painter->drawText(boundingRect(), Qt::AlignJustify | Qt::AlignHCenter |Qt::AlignVCenter, );
@@ -144,3 +157,14 @@ void TileFace::setDorfFont(int id)
 {
     _dorfFont = id;
 }
+
+bool TileFace::underConstruction() const
+{
+    return _underConstruction;
+}
+
+void TileFace::setUnderConstruction(bool underConstruction)
+{
+    _underConstruction = underConstruction;
+}
+

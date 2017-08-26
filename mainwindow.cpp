@@ -338,6 +338,7 @@ void MainWindow::connectUponNew()
     ui->squareBrushButton->toggle();
     _picker->setBrushType(B_SQUARE);
     _picker->resizeBrush(1);
+    _picker->setDrawMode(M_FREEHAND);
 }
 
 void MainWindow::openFile()
