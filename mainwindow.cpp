@@ -279,6 +279,8 @@ void MainWindow::makeNew()
 void MainWindow::exportMacro()
 {
     MaximalRectangle maxRec(_site->topFloor(), _width, _height, this, _projectName);
+    if(maxRec.amountOfWork() == 0)
+        return;
     _progressBar->setMaximum(maxRec.amountOfWork()*2);
     _progressBar->setValue(0);
 

@@ -132,30 +132,20 @@ void Picker::drawLine(QGraphicsSceneMouseEvent *event)
         return;
     }
 
-    Coords m = Coords(adjY, adjX);
+    Coords m = Coords(adjX, adjY);
 
     if(m == _mobilePoint)
         ;
     else {
         _mobilePoint = m;
-        _underConstruction.pop_back();
-        _underConstruction.push_back(m);
+        _marked.pop_back();
+        _marked.push_back(m);
         std::cout << "Mobile changed" << std::endl;
+        for (auto c : _marked){
+            markWithBrush(c);
+        }
     }
 
-
-    Coords c = Coords(adjX, adjY);
-    if(!(UC == c)){
-        (*_faces)[UC.x][UC.y]->setUnderConstruction(false);
-        (*_faces)[UC.x][UC.y]->setTempDesignation((*_faces)[UC.x][UC.y]->currentDesignation());
-        (*_faces)[c.y][c.x]->setTempDesignation(_CurrentDesignation);
-        (*_faces)[c.y][c.x]->setUnderConstruction(true);
-        /* the following line forces the tileface to repaint itself,
-         * otherwise it would repaint only after the cursor leaves the
-         * window */
-        (*_faces)[c.y][c.x]->setColor(128, 128, 0);
-        UC = Coords(c.y,c.x);
-    }
 
 }
 
@@ -239,8 +229,10 @@ void Picker::markWithBrush(Coords c)
                     (*_faces)[adjY][adjX]->setColor(128, 128, 0);
                     (*_faces)[adjY][adjX]->setTempDesignation(_CurrentDesignation);
                     (*_faces)[adjY][adjX]->setUnderConstruction(true);
+                    /*uncomment and change later when you add line drawing
                     Coords a(adjY, adjX);
                     _underConstruction.push_back(a);
+                    */
                 }
             }
         }
@@ -256,8 +248,8 @@ void Picker::mousePressEvent(QGraphicsSceneMouseEvent *event)
     int adjX = xPos/12;
     int adjY = yPos/12;
 
-    _fixedPoint = Coords(adjY, adjX);
-    _mobilePoint = Coords(adjY, adjX);
+    _fixedPoint = Coords(adjX, adjY);
+    _mobilePoint = Coords(adjX, adjY);
 
     switch (_drawMode){
     case M_FREEHAND :
@@ -265,8 +257,8 @@ void Picker::mousePressEvent(QGraphicsSceneMouseEvent *event)
         break;
     case M_LINE :
         _underConstruction.clear();
-        _underConstruction.push_back(_fixedPoint);
-        _underConstruction.push_back(_mobilePoint);
+        _marked.push_back(_fixedPoint);
+        _marked.push_back(_mobilePoint);
         drawLine(event);
         break;
     }
@@ -291,15 +283,14 @@ void Picker::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         _currentFloor->applyChanges(_pending, _CurrentDesignation);
         _pending.clear();
         emit changesMadeToModel();
-        //NE UNDERCONSTRUCTION, DRUGI NEKI VEKTOR TREBA
     } else if(_underConstruction.size() > 0){
-        _currentFloor->applyChanges(_underConstruction, _CurrentDesignation);
-        for (auto c : _underConstruction){
+        _currentFloor->applyChanges(_marked, _CurrentDesignation);
+        for (auto c : _marked){
             (*_faces)[c.x][c.y]->setTempDesignation((*_faces)[c.x][c.y]->currentDesignation());
             (*_faces)[c.x][c.y]->setUnderConstruction(false);
             (*_faces)[c.x][c.y]->setCurrentDesignation(_CurrentDesignation);
         }
-        _underConstruction.clear();
+        _marked.clear();
         emit changesMadeToModel();
     }
 }

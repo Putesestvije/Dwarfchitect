@@ -65,6 +65,7 @@ private:
     BrushType _brushType;
     QVector <QVector <Coords> > _brush;
     QVector <Coords> _underConstruction;
+    QVector <Coords> _marked;
     Coords UC;
     Coords _fixedPoint;
     Coords _mobilePoint;
