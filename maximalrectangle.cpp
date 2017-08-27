@@ -120,9 +120,9 @@ void MaximalRectangle::plotFloor(Key d, Floor *f)
         std::cout << "plotted rect " << _currRectangle << "with area " << a << std::endl;
         emit progessed(a);
 
-        std::cout << "found something at (" << _bestLL.x
-                  << "," << _bestLL.y << "), (" << _bestUR.x
-                  << "," << _bestUR.y << ")"
+        std::cout << "found something at (" << _bestLL.y
+                  << "," << _bestLL.x << "), (" << _bestUR.y
+                  << "," << _bestUR.x << ")"
                   << "rectangle #" <<_currRectangle << std::endl;
 
         if(_plottedSomething)
@@ -133,8 +133,8 @@ void MaximalRectangle::plotFloor(Key d, Floor *f)
 
 void MaximalRectangle::plotRectangle(Floor *f)
 {
-    for (int i = _bestLL.x; i <= _bestUR.x; i++)
-        for (int j = _bestLL.y; j <= _bestUR.y; j++)
+    for (int i = _bestLL.y; i <= _bestUR.y; i++)
+        for (int j = _bestLL.x; j <= _bestUR.x; j++)
             f->tiles()[i][j].rectangle = _currRectangle;
 
     _currRectangle++;
@@ -159,15 +159,15 @@ void MaximalRectangle::mainAlgorithm(Floor *f, Key d)
             if (_cache[y] < widestRect){
                 do {
                     p = _rectStack.takeLast();
-                    if ((widestRect * (y-p.x)) > area(_bestLL, _bestUR)){
-                        _bestLL = Coords(p.x, x);
+                    if ((widestRect * (y-p.y)) > area(_bestLL, _bestUR)){
+                        _bestLL = Coords(p.y, x);
                         _bestUR = Coords(y-1, x+widestRect-1);
                     }
-                    widestRect = p.y;
+                    widestRect = p.x;
                 } while (_cache[y] < widestRect);
                 widestRect = _cache[y];
                 if(widestRect != 0){
-                    Coords c(p.x, p.y);
+                    Coords c(p.y, p.x);
                     _rectStack.push_back(c);
                 }
             }
@@ -224,7 +224,7 @@ void MaximalRectangle::generateFloorCommands(Floor *f)
             return;
         Coords nearestCorner = findNearestCorner(rect); /*As in, nearest to the cursor*/
         moveCursorToPoint(nearestCorner);
-        _commands.append(f->tiles()[nearestCorner.x][nearestCorner.y].des);
+        _commands.append(f->tiles()[nearestCorner.y][nearestCorner.x].des);
         _commands.append(SELECT);
         Coords opositeCorner = findOpositeCorner(rect, _cursor);
         moveCursorToPoint(opositeCorner);
@@ -263,12 +263,12 @@ int MaximalRectangle::findNextRectangle(Floor *f)
     int rect = 0;
     QQueue<Coords> bfsQ;
     Coords c = _cursor;
-    f->tiles()[c.x][c.y].bfs = true;
+    f->tiles()[c.y][c.x].bfs = true;
     bfsQ.enqueue(c);
     while (!bfsQ.empty()){
         c = bfsQ.dequeue();
-        if((f->tiles()[c.x][c.y].rectangle) && !(f->tiles()[c.x][c.y].macroed)){
-            rect = f->tiles()[c.x][c.y].rectangle;
+        if((f->tiles()[c.y][c.x].rectangle) && !(f->tiles()[c.y][c.x].macroed)){
+            rect = f->tiles()[c.y][c.x].rectangle;
             counterBfs(f);
             //counterBfs2(f);
             return rect;
@@ -285,16 +285,16 @@ void MaximalRectangle::addNeighbors(Floor *f, QQueue<Coords> &bfsQ, Coords s, bo
 {
     for(int i = -1; i < 2; i++){
         for(int j = -1; j < 2; j++){
-            if( (s.x+i >= 0) && (s.y+j >= 0) && (s.x+i < _height) && (s.y+j < _width)){
+            if( (s.y+i >= 0) && (s.x+j >= 0) && (s.y+i < _height) && (s.x+j < _width)){
                 if(marking){
-                    if(!(f->tiles()[s.x+i][s.y+j].bfs)){
-                        f->tiles()[s.x+i][s.y+j].bfs = true;
-                        bfsQ.enqueue(Coords(s.x+i, s.y+j));
+                    if(!(f->tiles()[s.y+i][s.x+j].bfs)){
+                        f->tiles()[s.y+i][s.x+j].bfs = true;
+                        bfsQ.enqueue(Coords(s.y+i, s.x+j));
                     }
                 } else {/* this branch is used by the counterBfs function*/
-                    if (f->tiles()[s.x+i][s.y+j].bfs){
-                        f->tiles()[s.x+i][s.y+j].bfs = false;
-                        bfsQ.enqueue(Coords(s.x+i, s.y+j));
+                    if (f->tiles()[s.y+i][s.x+j].bfs){
+                        f->tiles()[s.y+i][s.x+j].bfs = false;
+                        bfsQ.enqueue(Coords(s.y+i, s.x+j));
                     }
                 }
             }
@@ -309,7 +309,7 @@ void MaximalRectangle::addNeighbors(Floor *f, QQueue<Coords> &bfsQ, Coords s, bo
 void MaximalRectangle::counterBfs(Floor *f)
 {
     QQueue<Coords> counterQ;
-    f->tiles()[_cursor.x][_cursor.y].bfs = false;
+    f->tiles()[_cursor.y][_cursor.x].bfs = false;
     counterQ.enqueue(_cursor);
     while(!counterQ.empty()){
         Coords c = counterQ.dequeue();
@@ -323,8 +323,8 @@ Coords MaximalRectangle::findNearestCorner(int rect)
     Coords nearest, a, b, c, d;
     a = cp.first;
     b = cp.second;
-    c = Coords(a.x, b.y);
-    d = Coords(b.x, a.y);
+    c = Coords(a.y, b.x);
+    d = Coords(b.y, a.x);
     nearest = a;
     if (CoordsDistance(_cursor, b) < CoordsDistance(_cursor, nearest))
         nearest = b;
@@ -340,17 +340,17 @@ int MaximalRectangle::CoordsDistance(Coords c1, Coords c2)
 {
     int dist = 0;
     int coef1, coef2;
-    coef1 = sign(c1.x - c2.x);
-    coef2 = sign(c1.y - c2.y);
+    coef1 = sign(c1.y - c2.y);
+    coef2 = sign(c1.x - c2.x);
 
     Coords diff = Coords(coef1, coef2);
     Coords temp = c2; /*I'm not sure why but I don't wanna change the c2 */
     while ((temp < c1) || (c1 < temp)) {
         temp = temp + diff;
-        if(temp.x == c1.x)
-            diff.x = 0;
         if(temp.y == c1.y)
             diff.y = 0;
+        if(temp.x == c1.x)
+            diff.x = 0;
         dist++;
     }
     return dist;
@@ -375,14 +375,14 @@ void MaximalRectangle::moveCursorToPoint(Coords p)
     Coords diff = calcMoveCoef(p, _cursor);
     Coords newDiff;
     Key dir;
-    dir = _directions[diff.x+1][diff.y+1];
+    dir = _directions[diff.y+1][diff.x+1];
     while ((_cursor < p) || (p < _cursor)){
         _commands.append(dir);
         _cursor = _cursor + diff;
         newDiff = calcMoveCoef(p, _cursor);
         if(!(diff == newDiff)){
             diff = newDiff;
-            dir = _directions[diff.x+1][diff.y+1];
+            dir = _directions[diff.y+1][diff.x+1];
         }
     }
 }
@@ -390,8 +390,8 @@ void MaximalRectangle::moveCursorToPoint(Coords p)
 Coords MaximalRectangle::calcMoveCoef(Coords dest, Coords start)
 {
     int coef1, coef2;
-    coef1 = sign(dest.x - start.x);
-    coef2 = sign(dest.y - start.y);
+    coef1 = sign(dest.y - start.y);
+    coef2 = sign(dest.x - start.x);
     Coords diff(coef1, coef2);
     return diff;
 }
@@ -404,15 +404,15 @@ Coords MaximalRectangle::findOpositeCorner(int rect, Coords currCorner)
 
     Coords oposite;
 
-    if(currCorner.x == originals.first.x)
-        oposite.x = originals.second.x;
-    else
-        oposite.x = originals.first.x;
-
-    if (currCorner.y == originals.first.y)
+    if(currCorner.y == originals.first.y)
         oposite.y = originals.second.y;
     else
         oposite.y = originals.first.y;
+
+    if (currCorner.x == originals.first.x)
+        oposite.x = originals.second.x;
+    else
+        oposite.x = originals.first.x;
 
     return oposite;
 }
@@ -420,8 +420,8 @@ Coords MaximalRectangle::findOpositeCorner(int rect, Coords currCorner)
 void MaximalRectangle::markRectMacroed(Floor *f, int rect)
 {
     CoordPair cp = _rectangles[rect];
-    for (int i = cp.first.x; i <= cp.second.x; i++)
-        for (int j = cp. first.y; j <= cp.second.y; j++)
+    for (int i = cp.first.y; i <= cp.second.y; i++)
+        for (int j = cp. first.x; j <= cp.second.x; j++)
             f->tiles()[i][j].macroed = true;
 
 }
@@ -441,9 +441,9 @@ void MaximalRectangle::counterBfs2(Floor *f)
  * UR is (-1,-1) */
 int MaximalRectangle::area(Coords LL, Coords UR)
 {
-    if(UR.x == -1 || UR.y == -1)
+    if(UR.y == -1 || UR.x == -1)
         return 0;
-    return (abs(LL.x - UR.x) + 1)*(abs(LL.y - UR.y) + 1);
+    return (abs(LL.y - UR.y) + 1)*(abs(LL.x - UR.x) + 1);
 }
 
 int MaximalRectangle::area(int rect)

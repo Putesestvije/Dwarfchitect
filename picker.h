@@ -57,6 +57,11 @@ private:
     void setupCircleBrush();
     void applyBrush(Coords c);
     void markWithBrush(Coords c);
+    void unmarkPrevious();
+    CoordPair orderedEnds();
+    void drawVerticalLine(CoordPair &ends);
+    void drawHorizontalLine(CoordPair &ends);
+    void drawLowerSlope(int dx, int dy, CoordPair &ends);
 
     int _width;
     int _height;

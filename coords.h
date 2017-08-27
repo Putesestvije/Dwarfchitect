@@ -6,36 +6,42 @@
  * tiles are to be changed*/
 struct Coords {
     /*and yes, these are bitfields*/
-    int x : 10;
     int y : 10;
+    int x : 10;
 
     bool operator <(Coords &other){
-        if (y != other.y)
-            return y < other.y;
-        else
+        if (x != other.x)
             return x < other.x;
+        else
+            return y < other.y;
     }
     Coords operator +(Coords &other){
-        return Coords(x+other.x, y+other.y);
+        return Coords(y+other.y, x+other.x);
     }
 
     Coords operator -(Coords &other){
-        return Coords(x-other.x, y-other.y);
+        return Coords(y-other.y, x-other.x);
     }
     bool operator==(Coords other){
-        if (!(x == other.x))
+        if (!(y == other.y))
             return false;
-        else if (!(y == other.y))
+        else if (!(x == other.x))
             return false;
         return true;
     }
+
+    void operator = (const Coords &other){
+        y = other.y;
+        x = other.x;
+    }
+
     friend std::ostream& operator<<(std::ostream &o, const Coords &c){
-        o << "(" << c.x  << "," << c.y << ")";
+        o << "(" << c.y  << "," << c.x << ")";
         return o;
     }
 
-    Coords(){x = 0; y = 0;}
-    Coords(int a, int b){x = a; y = b;}
+    Coords(){y = 0; x = 0;}
+    Coords(int a, int b){y = a; x = b;}
 };
 
 

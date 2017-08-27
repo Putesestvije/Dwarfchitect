@@ -132,21 +132,29 @@ void Picker::drawLine(QGraphicsSceneMouseEvent *event)
         return;
     }
 
-    Coords m = Coords(adjX, adjY);
+    Coords m = Coords(adjY, adjX);
 
-    if(m == _mobilePoint)
-        ;
-    else {
+    if(!(m == _mobilePoint)){ /*meaning, if there was movement between tiles */
         _mobilePoint = m;
-        _marked.pop_back();
-        _marked.push_back(m);
-        std::cout << "Mobile changed" << std::endl;
-        for (auto c : _marked){
+        CoordPair leftAndRight = orderedEnds();
+        int dx, dy;
+        dx = abs(leftAndRight.second.y - leftAndRight.first.y);
+        dy = abs(leftAndRight.second.x - leftAndRight.first.x);
+        if (dx == 0){
+            drawVerticalLine(leftAndRight);
+        } else if (dy == 0){
+            drawHorizontalLine(leftAndRight);
+        } else if (dx > dy){
+
+        } else {
+
+        }
+        unmarkPrevious();
+
+        for (auto c : _underConstruction){
             markWithBrush(c);
         }
     }
-
-
 }
 
 void Picker::setupSquareBrush()
@@ -216,8 +224,8 @@ void Picker::markWithBrush(Coords c)
 {
     for(int i = 0; i < _brush.size(); i++)
         for(int j = 0; j < _brush.size(); j++){
-            int adjY = _brush[i][j].y + c.y;
-            int adjX = _brush[i][j].x + c.x;
+            int adjX = _brush[i][j].y + c.y;
+            int adjY = _brush[i][j].x + c.x;
             if((adjY >= _height/12) || (adjX >= _width/12) ||
                     (adjY < 0) || (adjX < 0))
                 continue;
@@ -230,12 +238,78 @@ void Picker::markWithBrush(Coords c)
                     (*_faces)[adjY][adjX]->setTempDesignation(_CurrentDesignation);
                     (*_faces)[adjY][adjX]->setUnderConstruction(true);
                     /*uncomment and change later when you add line drawing
-                    Coords a(adjY, adjX);
                     _underConstruction.push_back(a);
                     */
+                    Coords a(adjY, adjX);
+                    _marked.push_back(a);
                 }
             }
         }
+}
+
+void Picker::unmarkPrevious()
+{
+    for (auto c : _marked){
+        (*_faces)[c.x][c.y]->setTempDesignation((*_faces)[c.x][c.y]->currentDesignation());
+        (*_faces)[c.x][c.y]->setUnderConstruction(false);
+    }
+    _marked.clear();
+}
+
+CoordPair Picker::orderedEnds()
+{
+    CoordPair res;
+    if (_fixedPoint.y < _mobilePoint.y){
+        res.first = _fixedPoint;
+        res.second = _mobilePoint;
+        return res;
+    } else {
+        res.first = _mobilePoint;
+        res.second = _fixedPoint;
+        return res;
+    }
+}
+
+void Picker::drawVerticalLine(CoordPair &ends)
+{
+    Coords upper, lower;
+
+    if(ends.first.x > ends.second.x){
+        upper = ends.first;
+        lower = ends.second;
+    } else {
+        upper = ends.second;
+        lower = ends.first;
+    }
+
+    _underConstruction.clear();
+
+    Coords c = lower;
+
+    for(int i = lower.x; i <= upper.x; i++){
+        c.x = i;
+        _underConstruction.push_back(c);
+    }
+}
+
+void Picker::drawHorizontalLine(CoordPair &ends)
+{
+    _underConstruction.clear();
+    Coords c = ends.first;
+    for(int i = ends.first.y; i <= ends.second.y; i++){
+        c.y = i;
+        _underConstruction.push_back(c);
+    }
+}
+
+void Picker::drawLowerSlope(int dx, int dy, CoordPair &ends)
+{
+    double k = dy/(dx*1.0);
+
+    _underConstruction.clear();
+
+    int x = ends.first.y;
+    int y = ends.first.x;
 }
 
 void Picker::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -248,8 +322,8 @@ void Picker::mousePressEvent(QGraphicsSceneMouseEvent *event)
     int adjX = xPos/12;
     int adjY = yPos/12;
 
-    _fixedPoint = Coords(adjX, adjY);
-    _mobilePoint = Coords(adjX, adjY);
+    _fixedPoint = Coords(adjY, adjX);
+    _mobilePoint = Coords(adjY, adjX);
 
     switch (_drawMode){
     case M_FREEHAND :
@@ -257,8 +331,6 @@ void Picker::mousePressEvent(QGraphicsSceneMouseEvent *event)
         break;
     case M_LINE :
         _underConstruction.clear();
-        _marked.push_back(_fixedPoint);
-        _marked.push_back(_mobilePoint);
         drawLine(event);
         break;
     }
@@ -283,7 +355,7 @@ void Picker::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         _currentFloor->applyChanges(_pending, _CurrentDesignation);
         _pending.clear();
         emit changesMadeToModel();
-    } else if(_underConstruction.size() > 0){
+    } else if(_marked.size() > 0){
         _currentFloor->applyChanges(_marked, _CurrentDesignation);
         for (auto c : _marked){
             (*_faces)[c.x][c.y]->setTempDesignation((*_faces)[c.x][c.y]->currentDesignation());
