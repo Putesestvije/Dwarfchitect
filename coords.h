@@ -30,9 +30,10 @@ struct Coords {
         return true;
     }
 
-    void operator = (const Coords &other){
+    Coords operator = (const Coords &other){
         y = other.y;
         x = other.x;
+        return *this;
     }
 
     friend std::ostream& operator<<(std::ostream &o, const Coords &c){

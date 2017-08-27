@@ -138,22 +138,34 @@ void Picker::drawLine(QGraphicsSceneMouseEvent *event)
         _mobilePoint = m;
         CoordPair leftAndRight = orderedEnds();
         int dx, dy;
-        dx = abs(leftAndRight.second.y - leftAndRight.first.y);
-        dy = abs(leftAndRight.second.x - leftAndRight.first.x);
+        dx = abs(leftAndRight.second.x - leftAndRight.first.x);
+        dy = abs(leftAndRight.second.y - leftAndRight.first.y);
+
+        /*std::cout << "first and second" << std::endl;
+
+        std::cout << leftAndRight.first << std::endl;
+        std::cout << leftAndRight.second << std::endl;
+        */
+
         if (dx == 0){
+            std::cout << "draw  vertical line" << std::endl;
             drawVerticalLine(leftAndRight);
         } else if (dy == 0){
+            std::cout << "drawHorizontalLine" << std::endl;
             drawHorizontalLine(leftAndRight);
         } else if (dx > dy){
-
-        } else {
-
+            std::cout << "drawing lower slope" << std::endl;
+            drawLowerSlope(dx, dy, leftAndRight);
+        } else if (dx <= dy){
+            std::cout << "drawing higher slope" << std::endl;
+            drawHigherSlope(dx, dy, leftAndRight);
         }
         unmarkPrevious();
 
         for (auto c : _underConstruction){
             markWithBrush(c);
         }
+       // std::cout << "end of marking" << std::endl;
     }
 }
 
@@ -201,8 +213,8 @@ void Picker::applyBrush(Coords c)
 {
     for(int i = 0; i < _brush.size(); i++)
         for(int j = 0; j < _brush.size(); j++){
-            int adjY = _brush[i][j].y + c.y;
-            int adjX = _brush[i][j].x + c.x;
+            int adjX = _brush[i][j].y + c.y;
+            int adjY = _brush[i][j].x + c.x;
             if((adjY >= _height/12) || (adjX >= _width/12) ||
                     (adjY < 0) || (adjX < 0))
                 continue;
@@ -213,7 +225,8 @@ void Picker::applyBrush(Coords c)
                      * window */
                     (*_faces)[adjY][adjX]->setColor(128, 128, 0);
                     (*_faces)[adjY][adjX]->setCurrentDesignation(_CurrentDesignation);
-                    Coords a(adjY, adjX);
+                    (*_faces)[adjY][adjX]->setTempDesignation(_CurrentDesignation);
+                    Coords a(adjX, adjY);
                     _pending.push_back(a);
                 }
             }
@@ -224,8 +237,8 @@ void Picker::markWithBrush(Coords c)
 {
     for(int i = 0; i < _brush.size(); i++)
         for(int j = 0; j < _brush.size(); j++){
-            int adjX = _brush[i][j].y + c.y;
-            int adjY = _brush[i][j].x + c.x;
+            int adjY = _brush[i][j].y + c.y;
+            int adjX = _brush[i][j].x + c.x;
             if((adjY >= _height/12) || (adjX >= _width/12) ||
                     (adjY < 0) || (adjX < 0))
                 continue;
@@ -234,17 +247,19 @@ void Picker::markWithBrush(Coords c)
                     /* the following line forces the tileface to repaint itself,
                      * otherwise it would repaint only after the cursor leaves the
                      * window */
-                    (*_faces)[adjY][adjX]->setColor(128, 128, 0);
                     (*_faces)[adjY][adjX]->setTempDesignation(_CurrentDesignation);
                     (*_faces)[adjY][adjX]->setUnderConstruction(true);
-                    /*uncomment and change later when you add line drawing
-                    _underConstruction.push_back(a);
-                    */
-                    Coords a(adjY, adjX);
+                    if(_CurrentDesignation == D_CLEAR)
+                        (*_faces)[c.x][c.y]->setColor(255, 255, 255);
+                    else
+                        (*_faces)[c.x][c.y]->setColor(128, 128, 0);
+                    Coords a(adjX, adjY);
+                   // std::cout << a << std::endl;
                     _marked.push_back(a);
                 }
             }
         }
+
 }
 
 void Picker::unmarkPrevious()
@@ -259,11 +274,17 @@ void Picker::unmarkPrevious()
 CoordPair Picker::orderedEnds()
 {
     CoordPair res;
-    if (_fixedPoint.y < _mobilePoint.y){
+    if (_fixedPoint.x < _mobilePoint.x){
+        std::cout << "mob :" << _mobilePoint << std::endl;
+
         res.first = _fixedPoint;
         res.second = _mobilePoint;
+        /*std::cout << "ordered first :" << res.first << std::endl;
+        std::cout << "ordered second :" << res.second << std::endl;*/
         return res;
     } else {
+
+        std::cout << "mob :" << _mobilePoint << std::endl;
         res.first = _mobilePoint;
         res.second = _fixedPoint;
         return res;
@@ -274,7 +295,7 @@ void Picker::drawVerticalLine(CoordPair &ends)
 {
     Coords upper, lower;
 
-    if(ends.first.x > ends.second.x){
+    if(ends.first.y > ends.second.y){
         upper = ends.first;
         lower = ends.second;
     } else {
@@ -286,8 +307,9 @@ void Picker::drawVerticalLine(CoordPair &ends)
 
     Coords c = lower;
 
-    for(int i = lower.x; i <= upper.x; i++){
-        c.x = i;
+    for(int i = lower.y; i <= upper.y; i++){
+        c.y = i;
+        //std::cout << c << std::endl;
         _underConstruction.push_back(c);
     }
 }
@@ -296,20 +318,67 @@ void Picker::drawHorizontalLine(CoordPair &ends)
 {
     _underConstruction.clear();
     Coords c = ends.first;
-    for(int i = ends.first.y; i <= ends.second.y; i++){
-        c.y = i;
+    for(int i = ends.first.x; i <= ends.second.x; i++){
+        c.x = i;
+        //std::cout << c << std::endl;
         _underConstruction.push_back(c);
     }
 }
 
 void Picker::drawLowerSlope(int dx, int dy, CoordPair &ends)
 {
-    double k = dy/(dx*1.0);
-
     _underConstruction.clear();
 
-    int x = ends.first.y;
-    int y = ends.first.x;
+    int D = 2*dy - dx;
+
+    int y = ends.first.y;
+
+    for (int x = ends.first.x; x <= ends.second.x; x++){
+        Coords c = Coords(y,x);
+        //std::cout << c << std::endl;
+        _underConstruction.push_back(c);
+        if(D > 0){
+            if (ends.second.y > ends.first.y)
+                y++;
+            else
+                y--;
+            D = D - 2*dx;
+        }
+        D = D + 2*dy;
+    }
+}
+
+void Picker::drawHigherSlope(int dx, int dy, CoordPair &ends)
+{
+    _underConstruction.clear();
+
+    int D = 2*dx - dy;
+
+    int x = ends.first.x;
+
+    if (ends.second.y > ends.first.y){
+        for (int y = ends.first.y; y <= ends.second.y; y++){
+            Coords c = Coords(y,x);
+            //std::cout << c << std::endl;
+            _underConstruction.push_back(c);
+            if(D > 0){
+                x++;
+                D = D - 2*dy;
+            }
+            D = D + 2*dx;
+        }
+    } else {
+        for (int y = ends.first.y; y >= ends.second.y; y--){
+            Coords c = Coords(y,x);
+            //std::cout << c << std::endl;
+            _underConstruction.push_back(c);
+            if(D > 0){
+                x++;
+                D = D - 2*dy;
+            }
+            D = D + 2*dx;
+        }
+    }
 }
 
 void Picker::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -324,6 +393,8 @@ void Picker::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
     _fixedPoint = Coords(adjY, adjX);
     _mobilePoint = Coords(adjY, adjX);
+
+    std::cout << "fix :" << _fixedPoint << " mob :" << _mobilePoint << std::endl;
 
     switch (_drawMode){
     case M_FREEHAND :
@@ -358,9 +429,13 @@ void Picker::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     } else if(_marked.size() > 0){
         _currentFloor->applyChanges(_marked, _CurrentDesignation);
         for (auto c : _marked){
-            (*_faces)[c.x][c.y]->setTempDesignation((*_faces)[c.x][c.y]->currentDesignation());
-            (*_faces)[c.x][c.y]->setUnderConstruction(false);
             (*_faces)[c.x][c.y]->setCurrentDesignation(_CurrentDesignation);
+            (*_faces)[c.x][c.y]->setTempDesignation((*_faces)[c.x][c.y]->currentDesignation());
+            if(_CurrentDesignation == D_CLEAR)
+                (*_faces)[c.x][c.y]->setColor(255, 255, 255);
+            else
+                (*_faces)[c.x][c.y]->setColor(128, 128, 0);
+            (*_faces)[c.x][c.y]->setUnderConstruction(false);
         }
         _marked.clear();
         emit changesMadeToModel();
@@ -393,9 +468,9 @@ void Picker::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
     int adjX = xPos/12;
     int adjY = yPos/12;
     position.append("(");
-    position.append(QString::number(adjX));
-    position.append(",");
     position.append(QString::number(adjY));
+    position.append(",");
+    position.append(QString::number(adjX));
     position.append(")");
 
     emit mousePosition(position);
@@ -412,9 +487,9 @@ void Picker::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
     int adjX = xPos/12;
     int adjY = yPos/12;
     position.append("(");
-    position.append(QString::number(adjX));
-    position.append(",");
     position.append(QString::number(adjY));
+    position.append(",");
+    position.append(QString::number(adjX));
     position.append(")");
 
     emit mousePosition(position);
