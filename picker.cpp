@@ -275,7 +275,7 @@ CoordPair Picker::orderedEnds()
 {
     CoordPair res;
     if (_fixedPoint.x < _mobilePoint.x){
-        std::cout << "mob :" << _mobilePoint << std::endl;
+        //std::cout << "mob :" << _mobilePoint << std::endl;
 
         res.first = _fixedPoint;
         res.second = _mobilePoint;
@@ -284,7 +284,7 @@ CoordPair Picker::orderedEnds()
         return res;
     } else {
 
-        std::cout << "mob :" << _mobilePoint << std::endl;
+        //std::cout << "mob :" << _mobilePoint << std::endl;
         res.first = _mobilePoint;
         res.second = _fixedPoint;
         return res;
@@ -381,7 +381,7 @@ void Picker::drawHigherSlope(int dx, int dy, CoordPair &ends)
     }
 }
 
-void Picker::drawCircle()
+void Picker::drawEllipse(QGraphicsSceneMouseEvent *event)
 {
     int xPos = event->pos().x();
     int yPos = event->pos().y();
@@ -398,11 +398,71 @@ void Picker::drawCircle()
     Coords m = Coords(adjY, adjX);
 
     if(!(m == _mobilePoint)){ /*meaning, if there was movement between tiles */
+        _underConstruction.clear();
         _mobilePoint = m;
         CoordPair leftAndRight = orderedEnds();
         int dx, dy;
         dx = abs(leftAndRight.second.x - leftAndRight.first.x);
         dy = abs(leftAndRight.second.y - leftAndRight.first.y);
+
+        int a = dx/2 + (dx%2);
+        int b = dy/2 + (dy%2);
+
+        int x = 0;
+        int y = b;
+
+        int D1 = 4*(b*b - a*a*b) + a*a;
+        //double D1 = b*b * a*a*b + a*a/4.0;
+        int adx = leftAndRight.second.x + leftAndRight.first.x;
+        int ady = leftAndRight.second.y + leftAndRight.first.y;
+        int x0 = adx/2 + adx%2;
+        int y0 = ady/2 + ady%2;
+
+        Coords center = Coords(y0, x0);
+
+        std::cout << "first :" << leftAndRight.first << std::endl;
+        std::cout << "second :" << leftAndRight.second << std::endl;
+        std::cout << "center :" << center << std::endl;
+
+        QVector<Coords> fQuad;
+
+        Coords c = Coords(y + center.y - dy%2, x + center.x);
+        fQuad.push_back(c);
+        //fQuad.push_back(center);
+        c = Coords(center.y, center.x + a - dx %2);
+        //fQuad.push_back(c);
+        std::cout << "dx :" << dx << " dy :" << dy << std::endl;
+        std::cout << "a :" << a << " b :" << b << " top :" << y + center.y - dy%2 <<  std::endl;
+
+        while (a * a * 2 * (2 * y - 1) > 4 * b * b * (x + 1)){
+            if (D1 < 0){
+                D1 = D1 + 4 * b*b * (2*x + 3);
+                x++;
+            } else {
+                D1 = D1 + 4 * (b*b *(2*x + 3) + a*a * (-2*y + 2)) + b*b;
+                x++;
+                y--;
+            }
+            c = Coords(y+center.y - dy%2, x + center.x - dx%2);
+            fQuad.push_back(c);
+        }
+
+        int D2 = 4*(b*b*(x*x+x-a*a) + a*a*(y*y-2*y+1)) + b*b;
+        while (y > 0){
+            if (D2 < 0){
+                D2 = D2 + 4*(b*b * (2*x + 2) + a*a * (-2*y + 3));
+                x++;
+                y--;
+            } else {
+                D2 = D2 + 4*a*a*(-2*y + 3);
+                y--;
+            }
+            c = Coords(y + center.y - dy%2, x + center.x - dx%2);
+            fQuad.push_back(c);
+        }
+
+        //fQuad.push_back(center);
+        plotOtherQuadrants(fQuad, dx, dy, center);
 
         unmarkPrevious();
 
@@ -410,6 +470,22 @@ void Picker::drawCircle()
             markWithBrush(c);
         }
        // std::cout << "end of marking" << std::endl;
+    }
+}
+
+void Picker::plotOtherQuadrants(QVector<Coords> &fQuad, int &dx, int &dy, Coords &center)
+{
+    int cx = center.x;
+    int cy = center.y;
+    Coords c;
+    for (int i = 0; i < fQuad.size(); i++){
+        _underConstruction.push_back(fQuad[i]);
+        c = Coords(fQuad[i].y, fQuad[i].x - 2*(fQuad[i].x-cx) - dx % 2);
+        _underConstruction.push_back(c);
+        c = Coords(fQuad[i].y - 2*(fQuad[i].y-cy) - dy % 2, fQuad[i].x - 2*(fQuad[i].x-cx) - dx % 2);
+        _underConstruction.push_back(c);
+        c = Coords(fQuad[i].y - 2*(fQuad[i].y-cy) - dy % 2, fQuad[i].x);
+        _underConstruction.push_back(c);
     }
 }
 
@@ -436,6 +512,9 @@ void Picker::mousePressEvent(QGraphicsSceneMouseEvent *event)
         _underConstruction.clear();
         drawLine(event);
         break;
+    case M_ELLIPSE :
+        _underConstruction.clear();
+        drawEllipse(event);
     }
 }
 
@@ -448,6 +527,9 @@ void Picker::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     case M_LINE :
         drawLine(event);
         break;
+    case M_ELLIPSE :
+        _underConstruction.clear();
+        drawEllipse(event);
     }
 }
 

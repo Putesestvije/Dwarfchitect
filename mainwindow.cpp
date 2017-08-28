@@ -114,9 +114,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     _buttonToDrawMode->setMapping(ui->pencilButton, M_FREEHAND);
     _buttonToDrawMode->setMapping(ui->lineButton, M_LINE);
+    _buttonToDrawMode->setMapping(ui->ellipseButton, M_ELLIPSE);
 
     connect(ui->pencilButton, SIGNAL(toggled(bool)), _buttonToDrawMode, SLOT(map()));
     connect(ui->lineButton, SIGNAL(toggled(bool)), _buttonToDrawMode, SLOT(map()));
+    connect(ui->ellipseButton, SIGNAL(toggled(bool)), _buttonToDrawMode, SLOT(map()));
 
     _buttonToBrushType = new QSignalMapper();
 
@@ -132,6 +134,7 @@ MainWindow::MainWindow(QWidget *parent) :
     _drawButtons->addButton(ui->toggleGrabButton);
     _drawButtons->addButton(ui->pencilButton);
     _drawButtons->addButton(ui->lineButton);
+    _drawButtons->addButton(ui->ellipseButton);
 
     _brushButtons = new QButtonGroup();
 

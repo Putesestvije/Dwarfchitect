@@ -63,8 +63,8 @@ private:
     void drawHorizontalLine(CoordPair &ends);
     void drawLowerSlope(int dx, int dy, CoordPair &ends);
     void drawHigherSlope(int dx, int dy, CoordPair &ends);
-    void drawCircle();
-
+    void drawEllipse(QGraphicsSceneMouseEvent *event);
+    void plotOtherQuadrants(QVector<Coords> &fQuad, int &dx, int &dy, Coords &center);
     int _width;
     int _height;
     Key _CurrentDesignation;
