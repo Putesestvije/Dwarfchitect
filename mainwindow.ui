@@ -669,8 +669,24 @@ p, li { white-space: pre-wrap; }
        </item>
        <item row="1" column="4">
         <widget class="QPushButton" name="lineButton">
+         <property name="minimumSize">
+          <size>
+           <width>28</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>28</width>
+           <height>24</height>
+          </size>
+         </property>
          <property name="text">
-          <string>Line</string>
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="images.qrc">
+           <normaloff>:/images/line.png</normaloff>:/images/line.png</iconset>
          </property>
          <property name="checkable">
           <bool>true</bool>
