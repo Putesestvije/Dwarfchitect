@@ -11,5 +11,7 @@
         <file>images/pencil.png</file>
         <file>images/sqr.png</file>
         <file>images/circle.png</file>
+        <file>images/ellipse.png</file>
+        <file>images/line.png</file>
     </qresource>
 </RCC>
