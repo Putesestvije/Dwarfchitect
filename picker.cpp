@@ -381,6 +381,38 @@ void Picker::drawHigherSlope(int dx, int dy, CoordPair &ends)
     }
 }
 
+void Picker::drawCircle()
+{
+    int xPos = event->pos().x();
+    int yPos = event->pos().y();
+
+    /* adjusted X and Y coordinates so you can use them
+     * as array indices*/
+    int adjX = xPos/12;
+    int adjY = yPos/12;
+
+    if((xPos >= _width) || (yPos >= _height) ||(xPos < 0) || (yPos < 0)){
+        return;
+    }
+
+    Coords m = Coords(adjY, adjX);
+
+    if(!(m == _mobilePoint)){ /*meaning, if there was movement between tiles */
+        _mobilePoint = m;
+        CoordPair leftAndRight = orderedEnds();
+        int dx, dy;
+        dx = abs(leftAndRight.second.x - leftAndRight.first.x);
+        dy = abs(leftAndRight.second.y - leftAndRight.first.y);
+
+        unmarkPrevious();
+
+        for (auto c : _underConstruction){
+            markWithBrush(c);
+        }
+       // std::cout << "end of marking" << std::endl;
+    }
+}
+
 void Picker::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     int xPos = event->pos().x();

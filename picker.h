@@ -63,6 +63,7 @@ private:
     void drawHorizontalLine(CoordPair &ends);
     void drawLowerSlope(int dx, int dy, CoordPair &ends);
     void drawHigherSlope(int dx, int dy, CoordPair &ends);
+    void drawCircle();
 
     int _width;
     int _height;
