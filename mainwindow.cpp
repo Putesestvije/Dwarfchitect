@@ -350,6 +350,8 @@ void MainWindow::connectUponNew()
     _picker->setBrushType(B_SQUARE);
     _picker->resizeBrush(1);
     _picker->setDrawMode(M_FREEHAND);
+
+    enableUponNew();
 }
 
 void MainWindow::openFile()
@@ -635,6 +637,26 @@ if(multiFloor){ /*gotta check if all floors are of same height now*/
 }
 
 return height;
+}
+
+void MainWindow::enableUponNew()
+{
+    ui->actionAdd_New_Bottom_Layer->setEnabled(true);
+    ui->actionAdd_New_Layer_Above_Current->setEnabled(true);
+    ui->actionAdd_New_Layer_Below_Current->setEnabled(true);
+    ui->actionAdd_New_Top_Layer->setEnabled(true);
+    ui->actionDelete_Current_Layer->setEnabled(true);
+    ui->actionExport_Macro->setEnabled(true);
+    ui->actionMove_Down->setEnabled(true);
+    ui->actionMove_Up->setEnabled(true);
+    ui->actionRedo->setEnabled(true);
+    ui->actionReset_Zoom->setEnabled(true);
+    ui->actionSave->setEnabled(true);
+    ui->actionSave_As->setEnabled(true);
+    ui->actionSquare_Rectangle_render->setEnabled(true);
+    ui->actionUndo->setEnabled(true);
+    ui->actionZoom_in->setEnabled(true);
+    ui->actionZoom_out->setEnabled(true);
 }
 
 void MainWindow::saveProper()

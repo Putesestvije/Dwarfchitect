@@ -60,6 +60,7 @@ private:
     void errorMsg(const char *s);
     int findCSVWidth(QVector<QVector<QString> > &contents);
     int findCSVHeight(QVector<QVector<QString> > &contents);
+    void enableUponNew();
 
     void saveProper();
 
