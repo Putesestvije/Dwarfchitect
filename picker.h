@@ -65,6 +65,9 @@ private:
     void drawHigherSlope(int dx, int dy, CoordPair &ends);
     void drawEllipse(QGraphicsSceneMouseEvent *event);
     void plotOtherQuadrants(QVector<Coords> &fQuad, int &dx, int &dy, Coords &center);
+    void drawRectangle(QGraphicsSceneMouseEvent *event);
+    void paintBucket(QGraphicsSceneMouseEvent *event);
+
     int _width;
     int _height;
     Key _CurrentDesignation;

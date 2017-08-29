@@ -489,6 +489,114 @@ void Picker::plotOtherQuadrants(QVector<Coords> &fQuad, int &dx, int &dy, Coords
     }
 }
 
+void Picker::drawRectangle(QGraphicsSceneMouseEvent *event)
+{
+    int xPos = event->pos().x();
+    int yPos = event->pos().y();
+
+    /* adjusted X and Y coordinates so you can use them
+     * as array indices*/
+    int adjX = xPos/12;
+    int adjY = yPos/12;
+
+    if((xPos >= _width) || (yPos >= _height) ||(xPos < 0) || (yPos < 0)){
+        return;
+    }
+    int left, right, top, bottom;
+    Coords m = Coords(adjY, adjX);
+
+    if(!(m == _mobilePoint)){ /*meaning, if there was movement between tiles */
+        _underConstruction.clear();
+        _mobilePoint = m;
+        CoordPair leftAndRight = orderedEnds();
+        left = leftAndRight.first.x;
+        right = leftAndRight.second.x;
+        if(leftAndRight.first.y > leftAndRight.second.y){
+            top = leftAndRight.first.y;
+            bottom = leftAndRight.second.y;
+        } else {
+            top = leftAndRight.second.y;
+            bottom = leftAndRight.first.y;
+        }
+        Coords c;
+        for(int i = left; i <= right; i++){
+            c = Coords(top, i);
+            _underConstruction.push_back(c);
+            c = Coords(bottom, i);
+            _underConstruction.push_back(c);
+        }
+        for (int i = bottom; i <= top; i++){
+            c = Coords(i, left);
+            _underConstruction.push_back(c);
+            c = Coords(i, right);
+            _underConstruction.push_back(c);
+        }
+
+        unmarkPrevious();
+
+        for (auto c : _underConstruction){
+            markWithBrush(c);
+        }
+    }
+
+}
+
+void Picker::paintBucket(QGraphicsSceneMouseEvent *event)
+{
+    int xPos = event->pos().x();
+    int yPos = event->pos().y();
+
+    /* adjusted X and Y coordinates so you can use them
+     * as array indices*/
+    int adjX = xPos/12;
+    int adjY = yPos/12;
+
+    if((xPos >= _width) || (yPos >= _height) ||(xPos < 0) || (yPos < 0)){
+        return;
+    }
+    QVector<Coords> neighbors;
+    Coords n = Coords(adjY, adjX);
+    Coords c;
+    Key toBePaintedOver = (*_faces)[adjY][adjX]->currentDesignation();
+    if (toBePaintedOver == _CurrentDesignation)
+        return;
+
+    neighbors.push_back(n);
+    while (neighbors.size() > 0){
+        n = neighbors.takeFirst();
+        _pending.push_back(Coords(n.x, n.y));
+        (*_faces)[n.y][n.x]->setCurrentDesignation(_CurrentDesignation);
+        if(n.y+1 < _faces->size())
+            if((*_faces)[n.y+1][n.x]->currentDesignation() == toBePaintedOver){
+                c = Coords(n.y+1, n.x);
+                (*_faces)[n.y+1][n.x]->setCurrentDesignation(_CurrentDesignation);
+                (*_faces)[n.y+1][n.x]->setColor(128, 128, 0);
+                neighbors.push_back(c);
+            }
+        if(n.y-1 >= 0)
+            if((*_faces)[n.y-1][n.x]->currentDesignation() == toBePaintedOver){
+                c = Coords(n.y-1, n.x);
+                (*_faces)[n.y-1][n.x]->setCurrentDesignation(_CurrentDesignation);
+                (*_faces)[n.y-1][n.x]->setColor(128, 128, 0);
+                neighbors.push_back(c);
+            }
+        if(n.x+1 < (*_faces)[0].size())
+            if((*_faces)[n.y][n.x+1]->currentDesignation() == toBePaintedOver){
+                c = Coords(n.y, n.x+1);
+                (*_faces)[n.y][n.x+1]->setCurrentDesignation(_CurrentDesignation);
+                (*_faces)[n.y][n.x+1]->setColor(128, 128, 0);
+                neighbors.push_back(c);
+            }
+        if(n.x-1 >= 0)
+            if((*_faces)[n.y][n.x-1]->currentDesignation() == toBePaintedOver){
+                c = Coords(n.y, n.x-1);
+                (*_faces)[n.y][n.x-1]->setCurrentDesignation(_CurrentDesignation);
+                (*_faces)[n.y][n.x-1]->setColor(128, 128, 0);
+                neighbors.push_back(c);
+            }
+    }
+}
+
 void Picker::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     int xPos = event->pos().x();
@@ -515,6 +623,16 @@ void Picker::mousePressEvent(QGraphicsSceneMouseEvent *event)
     case M_ELLIPSE :
         _underConstruction.clear();
         drawEllipse(event);
+        break;
+    case M_RECT :
+        _underConstruction.clear();
+        drawRectangle(event);
+        break;
+    case M_FILL :
+        paintBucket(event);
+        break;
+    default :
+        break;
     }
 }
 
@@ -530,6 +648,13 @@ void Picker::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     case M_ELLIPSE :
         _underConstruction.clear();
         drawEllipse(event);
+        break;
+    case M_RECT :
+        _underConstruction.clear();
+        drawRectangle(event);
+        break;
+    default :
+        break;
     }
 }
 

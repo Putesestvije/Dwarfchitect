@@ -13,5 +13,7 @@
         <file>images/circle.png</file>
         <file>images/ellipse.png</file>
         <file>images/line.png</file>
+        <file>images/rectangle.png</file>
+        <file>images/bucket.png</file>
     </qresource>
 </RCC>
