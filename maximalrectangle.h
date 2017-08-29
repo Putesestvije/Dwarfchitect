@@ -41,6 +41,7 @@ private:
     Coords _cursor;
     int _currRectangle;
     bool _plottedSomething;
+    bool _topLeft;
     QHash<int, CoordPair> _rectangles;
     QHash<Key, QString> _keys;
     QVector<Key> _commands;

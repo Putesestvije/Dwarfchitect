@@ -33,7 +33,8 @@ SOURCES += main.cpp\
     site.cpp \
     macroalgorithm.cpp \
     maximalrectangle.cpp \
-    graphicsview.cpp
+    graphicsview.cpp \
+    macrotypedialog.cpp
 
 
 HEADERS  += mainwindow.h\
@@ -47,10 +48,12 @@ HEADERS  += mainwindow.h\
     macroalgorithm.h \
     maximalrectangle.h \
     designations.h \
-    graphicsview.h
+    graphicsview.h \
+    macrotypedialog.h
 
 FORMS    += mainwindow.ui \
-    newprojectdialog_1.ui
+    newprojectdialog_1.ui \
+    macrotypedialog.ui
 
 RESOURCES += \
     otherforms.qrc \

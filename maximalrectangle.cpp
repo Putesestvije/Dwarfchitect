@@ -6,6 +6,7 @@
 #include <QTextStream>
 #include <QFileInfo>
 #include <QString>
+#include <macrotypedialog.h>
 
 #include "maximalrectangle.h"
 #include "designations.h"
@@ -32,6 +33,13 @@ MaximalRectangle::MaximalRectangle(Floor *top, int width, int height, QWidget *p
 
 void MaximalRectangle::generateMacro()
 {
+    macroTypeDialog mtdialog;
+
+    if (!mtdialog.exec())
+        return;
+
+    _topLeft = mtdialog.fromTopLeftCorner();
+
     plotSite();
     generateCommands();
     /*QString currDir = QDir::currentPath();
@@ -117,14 +125,14 @@ void MaximalRectangle::plotFloor(Key d, Floor *f)
 
         std::cout.flush();
         int a = area(_bestLL, _bestUR);
-        std::cout << "plotted rect " << _currRectangle << "with area " << a << std::endl;
+        //std::cout << "plotted rect " << _currRectangle << " with area " << a << std::endl;
         emit progessed(a);
 
-        std::cout << "found something at (" << _bestLL.y
+        /*std::cout << "found something at (" << _bestLL.y
                   << "," << _bestLL.x << "), (" << _bestUR.y
                   << "," << _bestUR.x << ")"
                   << "rectangle #" <<_currRectangle << std::endl;
-
+         */
         if(_plottedSomething)
             plotRectangle(f);
         emit syncFaces();
@@ -201,7 +209,11 @@ Coords MaximalRectangle::findStart()
 
 void MaximalRectangle::generateCommands()
 {
-    _cursor = findStart();
+    if (_topLeft)
+        _cursor = Coords(0,0);
+    else
+        _cursor = findStart();
+
     Floor *f = _topFloor;
     while (f != nullptr){
         std::cout << "cursor starting at " << _cursor << std::endl;
