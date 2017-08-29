@@ -610,7 +610,7 @@ void Picker::mousePressEvent(QGraphicsSceneMouseEvent *event)
     _fixedPoint = Coords(adjY, adjX);
     _mobilePoint = Coords(adjY, adjX);
 
-    std::cout << "fix :" << _fixedPoint << " mob :" << _mobilePoint << std::endl;
+    //std::cout << "fix :" << _fixedPoint << " mob :" << _mobilePoint << std::endl;
 
     switch (_drawMode){
     case M_FREEHAND :

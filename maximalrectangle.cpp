@@ -46,12 +46,12 @@ void MaximalRectangle::generateMacro()
     std::cout << currDir.toStdString() << std::endl;*/
 
     QString savePath = QFileDialog::getSaveFileName(_parent, tr("Save File"), _project, "Macro Files (*.mak)", nullptr, 0);
-    std::cout << savePath.toStdString() << std::endl;
+    //std::cout << savePath.toStdString() << std::endl;
     savePath.append(".mak");
 
     QFile file(savePath);
     QFileInfo fi(savePath);
-    std::cout << fi.fileName().toStdString() << std::endl;
+    //std::cout << fi.fileName().toStdString() << std::endl;
 
     if(!file.open(QIODevice::WriteOnly | QIODevice::Text)){
         QMessageBox *msg = new QMessageBox(_parent);
@@ -100,7 +100,7 @@ void MaximalRectangle::plotSite()
         plotFloor(Key::D_UPDOWN_STAIR, f);
         plotFloor(Key::D_RAMP, f);
         f = f->floorBelow();
-        std::cout << "on floor " << fl << std::endl;
+        //std::cout << "on floor " << fl << std::endl;
         fl++;
     }
 
@@ -216,7 +216,7 @@ void MaximalRectangle::generateCommands()
 
     Floor *f = _topFloor;
     while (f != nullptr){
-        std::cout << "cursor starting at " << _cursor << std::endl;
+        //std::cout << "cursor starting at " << _cursor << std::endl;
         generateFloorCommands(f);
         if(f->floorBelow() != nullptr)
             _commands.push_back(DOWN_Z);
@@ -229,9 +229,9 @@ void MaximalRectangle::generateFloorCommands(Floor *f)
 {
     int rect;
     while (true) {
-        std::cout << "Generate Floor Commands" << std::endl;
+        //std::cout << "Generate Floor Commands" << std::endl;
         rect = findNextRectangle(f);
-        std::cout << "rect = " << rect << std::endl;
+        //std::cout << "rect = " << rect << std::endl;
         if(!rect)
             return;
         Coords nearestCorner = findNearestCorner(rect); /*As in, nearest to the cursor*/
@@ -243,31 +243,10 @@ void MaximalRectangle::generateFloorCommands(Floor *f)
         _commands.append(SELECT);
         markRectMacroed(f, rect);
         int a = area(rect);
-        std::cout << "marked rect " << rect << " with area " << a << std::endl;
+        //std::cout << "marked rect " << rect << " with area " << a << std::endl;
         emit progessed(a);
     }
-    /*
-     * ponavljaj
-            nadji sledeci pravougaonik
-                uradi bfs
-                    stavi cursor u red
-                    ponavljaj dok se ne isprazni red
-                        uzmi sa vrha
-                        proveri da li valja
-                            ako valja
-                            isprazni red
-                            oslobodi bfs
-                                vrati pravougaonik
-                        dodaj njegove susede
-                    vrati prazan
-            ako nisi nasao
-                izadji
-            nadji najblizi cosak
-            idi ka njemu
-            markiraj pravougaonik
-                konkretno markiraj da je makroisan
-                posalji napredak
-    */
+
 }
 
 int MaximalRectangle::findNextRectangle(Floor *f)

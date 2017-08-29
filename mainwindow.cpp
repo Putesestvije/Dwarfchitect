@@ -299,8 +299,8 @@ void MainWindow::exportMacro()
 
     maxRec.generateMacro();
 
-    std::cout << _progressBar->maximum() << " ";
-    std::cout << _progressBar->value() << std::endl;
+    //std::cout << _progressBar->maximum() << " ";
+    //std::cout << _progressBar->value() << std::endl;
 
     maxRec.clearSite();
 
