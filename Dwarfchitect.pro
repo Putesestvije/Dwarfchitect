@@ -5,17 +5,21 @@
 #-------------------------------------------------
 
 QT       += core gui\
-#            designer
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Dwarfchitect
 TEMPLATE = app
 
-QMAKE_LFLAGS += -Wl,-verbose
+QMAKE_LFLAGS =
+QMAKE_LFLAGS += -Wl,-O1 -Wl,-rpath,lib -Wl,-verbose
 
-CONFIG += -static
-QMAKE_LFLAGS += -static
+QMAKE_LIBS =
+QMAKE_LIBS += -Llib -lQt5Designer -L/usr/lib64 -lQt5Widgets -lQt5Gui -lQt5Xml -lQt5Core -lGL -lpthread
+
+
+#CONFIG += -static
+#QMAKE_LFLAGS += -static
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings

@@ -148,16 +148,16 @@ void Picker::drawLine(QGraphicsSceneMouseEvent *event)
         */
 
         if (dx == 0){
-            std::cout << "draw  vertical line" << std::endl;
+            //std::cout << "draw  vertical line" << std::endl;
             drawVerticalLine(leftAndRight);
         } else if (dy == 0){
-            std::cout << "drawHorizontalLine" << std::endl;
+            //std::cout << "drawHorizontalLine" << std::endl;
             drawHorizontalLine(leftAndRight);
         } else if (dx > dy){
-            std::cout << "drawing lower slope" << std::endl;
+            //std::cout << "drawing lower slope" << std::endl;
             drawLowerSlope(dx, dy, leftAndRight);
         } else if (dx <= dy){
-            std::cout << "drawing higher slope" << std::endl;
+            //std::cout << "drawing higher slope" << std::endl;
             drawHigherSlope(dx, dy, leftAndRight);
         }
         unmarkPrevious();
@@ -420,9 +420,9 @@ void Picker::drawEllipse(QGraphicsSceneMouseEvent *event)
 
         Coords center = Coords(y0, x0);
 
-        std::cout << "first :" << leftAndRight.first << std::endl;
-        std::cout << "second :" << leftAndRight.second << std::endl;
-        std::cout << "center :" << center << std::endl;
+        //std::cout << "first :" << leftAndRight.first << std::endl;
+        //std::cout << "second :" << leftAndRight.second << std::endl;
+        //std::cout << "center :" << center << std::endl;
 
         QVector<Coords> fQuad;
 
@@ -461,7 +461,6 @@ void Picker::drawEllipse(QGraphicsSceneMouseEvent *event)
             fQuad.push_back(c);
         }
 
-        //fQuad.push_back(center);
         plotOtherQuadrants(fQuad, dx, dy, center);
 
         unmarkPrevious();
