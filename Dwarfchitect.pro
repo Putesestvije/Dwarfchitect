@@ -11,6 +11,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = Dwarfchitect
 TEMPLATE = app
 
+
+
 QMAKE_LFLAGS =
 QMAKE_LFLAGS += -Wl,-O1 -Wl,-rpath,lib -Wl,-verbose
 
