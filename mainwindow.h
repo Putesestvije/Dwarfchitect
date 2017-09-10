@@ -26,6 +26,12 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    Coords starterTile() const;
+    void setStarterTile(const Coords &starterTile);
+
+    bool hasStarter() const;
+    void setHasStarter(bool hasStarter);
+
 public slots:
     void status(QString status);
     void toggleUnsavedChanges();
@@ -53,6 +59,12 @@ private:
     QButtonGroup *_brushButtons;
     QTextEdit *_designationPreviewold;
 
+
+    /* This is some very bad design but I can't come up with anything else
+     * right now. Both MainWIndow and Picker have the hasStarter bool and
+     * the coordinates themselves*/
+    Coords _starterTile;
+    bool _hasStarter;
 
     void initCsvMap();
     void readCSV(QVector<QVector<QString> > &contents, QTextStream &in);

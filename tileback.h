@@ -11,6 +11,7 @@ struct TileBack{
     /*used in the bfs for rectangles not yet designated */
     bool bfs;
     bool macroed;
+    bool starter;
     TileBack(){
         des = D_CLEAR;
         /*-1 stands for belongs to no rectangle*/
@@ -19,6 +20,8 @@ struct TileBack{
         macroed = false;
 
         bfs = false;
+
+        starter = false;
     }
 };
 

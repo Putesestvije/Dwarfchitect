@@ -40,9 +40,9 @@ MainWindow::MainWindow(QWidget *parent) :
     _unsavedChanges = false;
 
 
-    int id = QFontDatabase::addApplicationFont(":/DF_Curses_8x12.ttf");
-    int id2 = QFontDatabase::addApplicationFont(":/Px437_IBM_BIOS.ttf");
-    int id3 = QFontDatabase::addApplicationFont(":/Px437_IBM_BIOS-2y.ttf");
+    QFontDatabase::addApplicationFont(":/DF_Curses_8x12.ttf");
+    QFontDatabase::addApplicationFont(":/Px437_IBM_BIOS.ttf");
+    QFontDatabase::addApplicationFont(":/Px437_IBM_BIOS-2y.ttf");
 
     /*for debugging fonts*/
    /* QStringList fonts = QFontDatabase::applicationFontFamilies(id);
@@ -62,6 +62,7 @@ MainWindow::MainWindow(QWidget *parent) :
     _progressBar->setFixedWidth(200);
     _progressBar->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
     ui->statusBar->addWidget(_progressBar);
+
     _progressBar->hide();
 
     _savePath = "";
@@ -88,6 +89,7 @@ MainWindow::MainWindow(QWidget *parent) :
     _buttonToDesignation->setMapping(ui->downStairButton, D_DOWN_STAIR);
     _buttonToDesignation->setMapping(ui->rampUpButton, D_RAMP);
     _buttonToDesignation->setMapping(ui->clearButton, D_CLEAR);
+    _buttonToDesignation->setMapping(ui->startDesButton, D_START);
 
 
 
@@ -98,6 +100,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->downStairButton, SIGNAL(toggled(bool)), _buttonToDesignation, SLOT(map()));
     connect(ui->rampUpButton, SIGNAL(toggled(bool)), _buttonToDesignation, SLOT(map()));
     connect(ui->clearButton, SIGNAL(toggled(bool)), _buttonToDesignation, SLOT(map()));
+    connect(ui->startDesButton, SIGNAL(toggled(bool)), _buttonToDesignation, SLOT(map()));
 
     _designationButtons = new QButtonGroup(this);
 
@@ -109,6 +112,7 @@ MainWindow::MainWindow(QWidget *parent) :
     _designationButtons->addButton(ui->downStairButton);
     _designationButtons->addButton(ui->rampUpButton);
     _designationButtons->addButton(ui->clearButton);
+    _designationButtons->addButton(ui->startDesButton);
 
     _buttonToDrawMode = new QSignalMapper();
 
@@ -151,6 +155,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(_buttonToDesignation, SIGNAL(mapped(int)), this, SLOT(changeDesignationPreview(int)));
 
     ui->graphicsView->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+
+    _hasStarter = false;
+    _starterTile = Coords(-1, -1);
 
 }
 
@@ -222,6 +229,26 @@ void MainWindow::closeEvent(QCloseEvent *event)
         }
     } else
         event->accept();
+}
+
+bool MainWindow::hasStarter() const
+{
+    return _hasStarter;
+}
+
+void MainWindow::setHasStarter(bool hasStarter)
+{
+    _hasStarter = hasStarter;
+}
+
+Coords MainWindow::starterTile() const
+{
+    return _starterTile;
+}
+
+void MainWindow::setStarterTile(const Coords &starterTile)
+{
+    _starterTile = starterTile;
 }
 
 void MainWindow::initCsvMap()
@@ -324,6 +351,7 @@ void MainWindow::connectUponNew()
 
     connect(ui->actionMove_Up, &QAction::triggered, _site, &Site::moveCurrUp);
     connect(ui->actionMove_Down, &QAction::triggered, _site, &Site::moveCurrDown);
+    connect(ui->actionDelete_Current_Layer, &QAction::triggered, _site, &Site::removeCurrentFloor);
 
     connect(ui->actionUndo, &QAction::triggered, _site, &Site::undo);
     connect(ui->actionRedo, &QAction::triggered, _site, &Site::redo);
@@ -583,11 +611,10 @@ Site* MainWindow::parseCSV(QVector<QVector<QString> > &contents)
 void MainWindow::errorMsg(const char* s)
 {
     QString ss(s);
-    QMessageBox *msg = new QMessageBox();
-    msg->setIcon(QMessageBox::Warning);
-    msg->setText(ss);
-    msg->exec();
-    delete msg;
+    QMessageBox msg;
+    msg.setIcon(QMessageBox::Warning);
+    msg.setText(ss);
+    msg.exec();
     return;
 }
 

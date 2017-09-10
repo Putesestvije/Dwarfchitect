@@ -19,6 +19,7 @@ public:
     void addFloorBelowCurr();
     void addNewTopFloor();
     void addNewBottomFloor();
+    void removeCurrentFloor();
     Floor *currFloor() const;
     void setCurrFloor(Floor *currFloor);
 

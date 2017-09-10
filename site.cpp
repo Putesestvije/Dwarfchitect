@@ -79,6 +79,36 @@ void Site::addNewBottomFloor()
     connect(f, &Floor::syncRequired, this, &Site::syncRequired);
 }
 
+void Site::removeCurrentFloor()
+{
+    if(_currFloor->floorAbove() == nullptr && _currFloor->floorBelow() == nullptr)
+        return;
+    else {
+        Floor *f = _currFloor;
+
+        if(_currFloor->floorAbove() != nullptr)
+            _currFloor = _currFloor->floorAbove();
+        else
+            _currFloor = _currFloor->floorBelow();
+
+
+        if (f->floorAbove() != nullptr){
+            f->floorAbove()->setFloorBelow(f->floorBelow());
+        } else
+            _topFloor = f->floorBelow();
+
+        if (f->floorBelow() != nullptr){
+            f->floorBelow()->setFloorAbove(f->floorAbove());
+        }
+
+        emit currFloorChanged(_currFloor);
+
+        delete f;
+    }
+
+
+}
+
 Floor *Site::currFloor() const
 {
     return _currFloor;

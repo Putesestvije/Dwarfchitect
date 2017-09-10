@@ -35,6 +35,12 @@ public:
     Floor *currentFloor() const;
     void setCurrentFloor(Floor *currentFloor);
 
+    Coords starterTile() const;
+    void setStarterTile(const Coords &starterTile);
+
+    bool hasStarter() const;
+    void setHasStarter(bool hasStarter);
+
 signals:
     void changesMadeToModel();
     void undo();
@@ -76,11 +82,15 @@ private:
     QVector <QVector <Coords> > _brush;
     QVector <Coords> _underConstruction;
     QVector <Coords> _marked;
-    Coords UC;
+
     Coords _fixedPoint;
     Coords _mobilePoint;
+    Coords _starterTile;
+
+    bool _hasStarter;
 
     Floor *_currentFloor;
+    Floor *_topFloor;
 
     std::vector<std::vector<TileFace*> > *_faces;
     QVector<Coords> _pending;

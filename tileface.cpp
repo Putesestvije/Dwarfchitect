@@ -21,6 +21,7 @@ TileFace::TileFace(const QColor &color, int x, int y)
     _tempDesignation = D_CLEAR;
     _rect = 0;
     _underConstruction = false;
+    _starter = false;
 }
 
 QRectF TileFace::boundingRect() const
@@ -53,7 +54,9 @@ void TileFace::paint(QPainter *painter, const QStyleOptionGraphicsItem *Option, 
         //std::cout << "CLEAR" << std::endl;
     }
 
-    if(designationToBePainted == D_CLEAR)
+    if (_starter)
+        _color.setRgb(0, 255, 0);
+    else if (designationToBePainted == D_CLEAR)
         _color.setRgb(255, 255, 255);
     else
         _color.setRgb(128, 128, 0);
@@ -130,7 +133,7 @@ Key TileFace::currentDesignation() const
 }
 
 void TileFace::setCurrentDesignation(const Key &currentDesigantion)
-{
+{    
     _currentDesigantion = currentDesigantion;
 }
 
@@ -167,5 +170,15 @@ bool TileFace::underConstruction() const
 void TileFace::setUnderConstruction(bool underConstruction)
 {
     _underConstruction = underConstruction;
+}
+
+bool TileFace::starter() const
+{
+    return _starter;
+}
+
+void TileFace::setStarter(bool starter)
+{
+    _starter = starter;
 }
 

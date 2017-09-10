@@ -5,6 +5,7 @@
 #include <QSet>
 #include <QKeyEvent>
 #include <QGraphicsView>
+#include <QMessageBox>
 
 Picker::Picker()
 {
@@ -20,10 +21,10 @@ Picker::Picker(int width, int height, std::vector<std::vector<TileFace *> > *fac
     setFlags(ItemIsSelectable);
     _CurrentDesignation = D_DIG;
     setAcceptHoverEvents(true);
-    //change the next line or remove it completely later
-    UC = Coords(0, 0);
 
-    //_pending = new QVector<Coords>;
+    _hasStarter = false;
+
+    _starterTile = Coords(-1, -1);
 }
 
 Picker::~Picker()
@@ -431,8 +432,8 @@ void Picker::drawEllipse(QGraphicsSceneMouseEvent *event)
         //fQuad.push_back(center);
         c = Coords(center.y, center.x + a - dx %2);
         //fQuad.push_back(c);
-        std::cout << "dx :" << dx << " dy :" << dy << std::endl;
-        std::cout << "a :" << a << " b :" << b << " top :" << y + center.y - dy%2 <<  std::endl;
+        //std::cout << "dx :" << dx << " dy :" << dy << std::endl;
+        //std::cout << "a :" << a << " b :" << b << " top :" << y + center.y - dy%2 <<  std::endl;
 
         while (a * a * 2 * (2 * y - 1) > 4 * b * b * (x + 1)){
             if (D1 < 0){
@@ -596,11 +597,31 @@ void Picker::paintBucket(QGraphicsSceneMouseEvent *event)
     }
 }
 
+bool Picker::hasStarter() const
+{
+    return _hasStarter;
+}
+
+void Picker::setHasStarter(bool hasStarter)
+{
+    _hasStarter = hasStarter;
+}
+
+Coords Picker::starterTile() const
+{
+    return _starterTile;
+}
+
+void Picker::setStarterTile(const Coords &starterTile)
+{
+    _starterTile = starterTile;
+}
+
 void Picker::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     int xPos = event->pos().x();
     int yPos = event->pos().y();
-
+    
     /* adjusted X and Y coordinates so you can use them
      * as array indices*/
     int adjX = xPos/12;
@@ -611,32 +632,53 @@ void Picker::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
     //std::cout << "fix :" << _fixedPoint << " mob :" << _mobilePoint << std::endl;
 
-    switch (_drawMode){
-    case M_FREEHAND :
-        drawFreeHand(event);
-        break;
-    case M_LINE :
-        _underConstruction.clear();
-        drawLine(event);
-        break;
-    case M_ELLIPSE :
-        _underConstruction.clear();
-        drawEllipse(event);
-        break;
-    case M_RECT :
-        _underConstruction.clear();
-        drawRectangle(event);
-        break;
-    case M_FILL :
-        paintBucket(event);
-        break;
-    default :
-        break;
+    if(_CurrentDesignation == D_START){
+        if (_currentFloor->floorAbove() != nullptr){
+            QMessageBox msg;
+            msg.setIcon(QMessageBox::Warning);
+            msg.setText("Starter tile can only be placed on the top floor.");
+            msg.exec();
+            return;
+        }
+        if (_hasStarter){
+            (*_faces)[_starterTile.y][_starterTile.x]->setStarter(false);
+            (*_faces)[_starterTile.y][_starterTile.x]->setColor(128, 128, 0);
+            _starterTile = Coords(adjY, adjX);
+        }
+        _hasStarter = true;
+        _starterTile = Coords(adjY, adjX);
+        (*_faces)[adjY][adjX]->setStarter(true);
+        (*_faces)[adjY][adjX]->setColor(0, 255, 0);
+    } else {
+            switch (_drawMode){
+        case M_FREEHAND :
+            drawFreeHand(event);
+            break;
+        case M_LINE :
+            _underConstruction.clear();
+            drawLine(event);
+            break;
+        case M_ELLIPSE :
+            _underConstruction.clear();
+            drawEllipse(event);
+            break;
+        case M_RECT :
+            _underConstruction.clear();
+            drawRectangle(event);
+            break;
+        case M_FILL :
+            paintBucket(event);
+            break;
+        default :
+            break;
+        }
     }
 }
 
 void Picker::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
+    if(_CurrentDesignation == D_START)
+        return;
     switch (_drawMode){
     case M_FREEHAND :
         drawFreeHand(event);

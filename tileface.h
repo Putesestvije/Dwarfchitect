@@ -32,6 +32,9 @@ public:
     bool underConstruction() const;
     void setUnderConstruction(bool underConstruction);
 
+    bool starter() const;
+    void setStarter(bool starter);
+
 private:
     /* coresponds to the tileback's rectangle
      * used in debugging to check if the plotter
@@ -48,6 +51,7 @@ private:
     Key _tempDesignation;
 
     bool _underConstruction;
+    bool _starter;
 };
 
 #endif // TILEFACE_H
