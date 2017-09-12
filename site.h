@@ -39,6 +39,7 @@ public:
 signals:
     void syncRequired();
     void currFloorChanged(Floor *f);
+    void topFloorChanged();
 
 public slots:
     void undo();

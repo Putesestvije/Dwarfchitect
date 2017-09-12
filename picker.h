@@ -46,6 +46,7 @@ signals:
     void undo();
     void redo();
     void mousePosition(QString pos);
+    void newStartTile(Coords start);
 
 public slots:
     void sync();
@@ -55,6 +56,7 @@ public slots:
     void setBrushType(int b);
     void setupBrush();
     void resizeBrush(int size);
+    void removeStarterTile();
 
 private:
     void drawFreeHand(QGraphicsSceneMouseEvent *event);

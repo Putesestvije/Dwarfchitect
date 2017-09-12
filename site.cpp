@@ -34,13 +34,16 @@ void Site::addFloorAboveCurr()
                          _height,
                          _currFloor->floorAbove(),
                          _currFloor);
+
+
     if(_currFloor->floorAbove() != nullptr)
         _currFloor->floorAbove()->setFloorBelow(f);
-    else
+    else{
         _topFloor = f;
+        emit topFloorChanged();
+    }
     _currFloor->setFloorAbove(f);
     connect(f, &Floor::syncRequired, this, &Site::syncRequired);
-    //connect()
 }
 
 void Site::addFloorBelowCurr()
@@ -65,6 +68,7 @@ void Site::addNewTopFloor()
                          _topFloor);
     _topFloor->setFloorAbove(f);
     _topFloor = f;
+    emit topFloorChanged();
     connect(f, &Floor::syncRequired, this, &Site::syncRequired);
 }
 
@@ -81,16 +85,18 @@ void Site::addNewBottomFloor()
 
 void Site::removeCurrentFloor()
 {
-    if(_currFloor->floorAbove() == nullptr && _currFloor->floorBelow() == nullptr)
+    if(_currFloor == _topFloor && _currFloor == _bottomFloor)
         return;
     else {
         Floor *f = _currFloor;
+
+        if (_currFloor == _topFloor)
+            emit topFloorChanged();
 
         if(_currFloor->floorAbove() != nullptr)
             _currFloor = _currFloor->floorAbove();
         else
             _currFloor = _currFloor->floorBelow();
-
 
         if (f->floorAbove() != nullptr){
             f->floorAbove()->setFloorBelow(f->floorBelow());
@@ -99,7 +105,8 @@ void Site::removeCurrentFloor()
 
         if (f->floorBelow() != nullptr){
             f->floorBelow()->setFloorAbove(f->floorAbove());
-        }
+        } else
+            _bottomFloor = f->floorBelow();
 
         emit currFloorChanged(_currFloor);
 

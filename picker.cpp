@@ -63,6 +63,16 @@ void Picker::newFloor(Floor *f)
 {
     _currentFloor = f;
     _currentFloor->synchronizeFaces(_faces);
+
+    if (f == _topFloor){
+        if(_hasStarter){
+            (*_faces)[_starterTile.y][_starterTile.x]->setStarter(true);
+        }
+    } else {
+        if(_hasStarter){
+            (*_faces)[_starterTile.y][_starterTile.x]->setStarter(false);
+        }
+    }
 }
 
 void Picker::setCurrentDesignation(int k)
@@ -101,6 +111,15 @@ void Picker::resizeBrush(int size)
     //std::cout << "given size " << size << std::endl;
     setupBrush();
 }
+
+void Picker::removeStarterTile()
+{
+    if(_hasStarter){
+        _hasStarter = false;
+        (*_faces)[_starterTile.y][_starterTile.x]->setStarter(false);
+    }
+}
+
 
 void Picker::drawFreeHand(QGraphicsSceneMouseEvent *event)
 {
@@ -636,7 +655,7 @@ void Picker::mousePressEvent(QGraphicsSceneMouseEvent *event)
         if (_currentFloor->floorAbove() != nullptr){
             QMessageBox msg;
             msg.setIcon(QMessageBox::Warning);
-            msg.setText("Starter tile can only be placed on the top floor.");
+            msg.setText("The starter tile can only be placed on the top floor.");
             msg.exec();
             return;
         }
@@ -645,6 +664,7 @@ void Picker::mousePressEvent(QGraphicsSceneMouseEvent *event)
             (*_faces)[_starterTile.y][_starterTile.x]->setColor(128, 128, 0);
             _starterTile = Coords(adjY, adjX);
         }
+        _topFloor = _currentFloor;
         _hasStarter = true;
         _starterTile = Coords(adjY, adjX);
         (*_faces)[adjY][adjX]->setStarter(true);

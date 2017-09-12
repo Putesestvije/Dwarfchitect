@@ -35,6 +35,7 @@ public:
 public slots:
     void status(QString status);
     void toggleUnsavedChanges();
+    void removeStarterTile();
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *_scene;
@@ -69,14 +70,14 @@ private:
     void initCsvMap();
     void readCSV(QVector<QVector<QString> > &contents, QTextStream &in);
     Site *parseCSV(QVector<QVector<QString> > &contents);
+    void extractStartTile(QString s);
     void errorMsg(const char *s);
     int findCSVWidth(QVector<QVector<QString> > &contents);
     int findCSVHeight(QVector<QVector<QString> > &contents);
     void enableUponNew();
-
     void saveProper();
-
     bool saveUponNewOrOpen();
+
 private slots:
     void makeNew();
     void exportMacro();

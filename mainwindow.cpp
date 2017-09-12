@@ -13,8 +13,9 @@
 #include <QSpinBox>
 #include <iostream>
 #include <QDialog>
-#include <QVector>
+#include <QRegExp>
 #include <QString>
+#include <QVector>
 #include <string>
 #include <QFile>
 #include <QMap>
@@ -181,6 +182,11 @@ void MainWindow::toggleUnsavedChanges()
     setWindowTitle(_title);
 }
 
+void MainWindow::removeStarterTile()
+{
+    _hasStarter = false;
+}
+
 void MainWindow::populateScene()
 {
     std::vector<std::vector<TileFace*> > *faces = new std::vector<std::vector<TileFace*> >();
@@ -249,6 +255,8 @@ Coords MainWindow::starterTile() const
 void MainWindow::setStarterTile(const Coords &starterTile)
 {
     _starterTile = starterTile;
+
+    _hasStarter = true;
 }
 
 void MainWindow::initCsvMap()
@@ -284,6 +292,7 @@ void MainWindow::makeNew()
     returnCode = makeNew->exec();
 
     if(returnCode){
+        _hasStarter = false;
         _width = makeNew->levelWidth();
         _height = makeNew->levelHeight();
         _projectName = makeNew->acquiredName();
@@ -343,6 +352,8 @@ void MainWindow::connectUponNew()
 {
     connect(_site, &Site::syncRequired, _picker, &Picker::sync);
     connect(_site, &Site::currFloorChanged, _picker, &Picker::newFloor);
+    connect(_site, &Site::topFloorChanged, _picker, &Picker::removeStarterTile);
+    connect(_site, &Site::topFloorChanged, this, &MainWindow::removeStarterTile);
 
     connect(ui->actionAdd_New_Bottom_Layer, &QAction::triggered, _site, &Site::addNewBottomFloor);
     connect(ui->actionAdd_New_Top_Layer, &QAction::triggered, _site, &Site::addNewTopFloor);
@@ -405,6 +416,8 @@ void MainWindow::openFile()
 
     QVector<QVector<QString> > contents;
     contents.clear();
+
+    _hasStarter = false;
     Site *oldSite = _site;
     QGraphicsScene *oldScene = _scene;
     try {
@@ -535,7 +548,7 @@ Site* MainWindow::parseCSV(QVector<QVector<QString> > &contents)
     int width = findCSVWidth(contents);
     int height = findCSVHeight(contents);
 
-    std::cout << height << ", " << width << std::endl;
+    //std::cout << height << ", " << width << std::endl;
 
     if(height == 0 || width == 0)
         throw ("The file only contains a header!");
@@ -554,8 +567,10 @@ Site* MainWindow::parseCSV(QVector<QVector<QString> > &contents)
     if(s.startsWith("#build") || s.startsWith("\"#build")
             ||s.startsWith("#query") || s.startsWith("\"#query"))
         throw "Can't parse a building/querying csv file!";
-    else if( s.startsWith("#dig") || s.startsWith("\"#dig"))
-        ;
+    else if (s.startsWith("#dig") || s.startsWith("\"#dig")){
+        if (s.contains("start", Qt::CaseInsensitive) )
+            extractStartTile(s);
+    }
     else if(s.length() < 2){
         f->tiles()[floorH][floorW].des = _csvMap[s];
         floorW++;
@@ -606,6 +621,11 @@ Site* MainWindow::parseCSV(QVector<QVector<QString> > &contents)
 
     return newSite;
 
+}
+
+void MainWindow::extractStartTile(QString s)
+{
+    QRegExp catchStart;
 }
 
 void MainWindow::errorMsg(const char* s)
