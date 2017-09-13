@@ -323,7 +323,7 @@ void MainWindow::makeNew()
 
 void MainWindow::exportMacro()
 {
-    MaximalRectangle maxRec(_site->topFloor(), _width, _height, this, _projectName);
+    MaximalRectangle maxRec(_site->topFloor(), _width, _height, _projectName, this);
     if(maxRec.amountOfWork() == 0)
         return;
     _progressBar->setMaximum(maxRec.amountOfWork()*2);
@@ -403,7 +403,7 @@ void MainWindow::openFile()
         return;
 
     QString filename = QFileDialog::getOpenFileName(this, "Open File", QString(), "CSV Files (*.csv)");
-    std::cout << filename.toStdString() << std::endl;
+    //std::cout << filename.toStdString() << std::endl;
     if (filename == "")
         return;
 
@@ -442,10 +442,15 @@ void MainWindow::openFile()
     if (oldScene)
        delete oldScene;
     _picker->setCurrentFloor(_site->topFloor());
+    _picker->setTopFloor(_site->topFloor());
     _site->setCurrFloor(_site->topFloor());
+
+    if (_hasStarter)
+        _picker->setStarterTile(_starterTile);
     connectUponNew();
 
     _picker->sync();
+
 
 }
 
@@ -571,6 +576,14 @@ Site* MainWindow::parseCSV(QVector<QVector<QString> > &contents)
         if (s.contains("start", Qt::CaseInsensitive) )
             extractStartTile(s);
     }
+    /*
+    QString qs("#dig start(30 45)");
+
+    QRegExp catchStart = QRegExp("start\\((\\d+)\\s+(\\d+)\\)");
+    if (catchStart.indexIn(qs) > -1){
+        std::cout << "The REGEX works " << catchStart.cap(1).toStdString() << " " << catchStart.cap(2).toStdString() << std::endl;
+    }
+    */
     else if(s.length() < 2){
         f->tiles()[floorH][floorW].des = _csvMap[s];
         floorW++;
@@ -625,7 +638,15 @@ Site* MainWindow::parseCSV(QVector<QVector<QString> > &contents)
 
 void MainWindow::extractStartTile(QString s)
 {
-    QRegExp catchStart;
+    QRegExp catchStart = QRegExp("start\\((\\d+)\\s+(\\d+)\\)");
+
+    if (catchStart.indexIn(s) < 0)
+        throw ("Something is wrong with the starting tile information!");
+    else{
+        _starterTile = Coords(catchStart.cap(2).toInt(), catchStart.cap(1).toInt());
+        //std::cout << "found a start at" << catchStart.cap(2).toStdString() << " " << catchStart.cap(1).toStdString() << std::endl;
+        _hasStarter = true;
+    }
 }
 
 void MainWindow::errorMsg(const char* s)
@@ -724,6 +745,9 @@ void MainWindow::saveProper()
     QTextStream out(&file);
 
     out << "#dig";
+    if (_picker->hasStarter()){
+        out << " start(" << _picker->starterTile().x << " " << _picker->starterTile().y << ")";
+    }
     for (int i = 1; i < _width; i++)
         out << ", ";
     out << '\n';

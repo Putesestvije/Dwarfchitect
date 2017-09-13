@@ -16,6 +16,10 @@ public:
     ~macroTypeDialog();
 
     bool fromTopLeftCorner();
+    bool fromTopmostLeftmost();
+    bool fromStarter();
+
+    void disableStart();
 
 private:
     Ui::macroTypeDialog *ui;

@@ -7,6 +7,7 @@
 #include "floor.h"
 #include "coords.h"
 #include "macroalgorithm.h"
+#include "mainwindow.h"
 
 class MaximalRectangle : public MacroAlgorithm
 {
@@ -15,7 +16,7 @@ public:
 
 
     MaximalRectangle();
-    MaximalRectangle(Floor *top, int width, int height, QWidget *parent = NULL, QString project = "");
+    MaximalRectangle(Floor *top, int width, int height,  QString project = "", MainWindow *parent = NULL);
 
     void generateMacro();
 
@@ -30,8 +31,6 @@ private:
     Floor *_topFloor;
     int _width;
     int _height;
-    QWidget *_parent;
-    QString _project;
 
 
     QVector<Coords> _rectStack;
@@ -39,6 +38,8 @@ private:
     Coords _bestLL;
     Coords _bestUR;
     Coords _cursor;
+    QString _project;
+    MainWindow *_parent;
     int _currRectangle;
     bool _plottedSomething;
     bool _topLeft;
@@ -54,7 +55,7 @@ private:
     void plotRectangle(Floor *f);
     void mainAlgorithm(Floor *f, Key d);
     void updateCache(Floor *f, int x, Key d);
-    Coords findStart();
+    Coords findTopmostLeftmost();
     void generateCommands();
     void generateFloorCommands(Floor *f);
     int findNextRectangle(Floor *f);

@@ -616,6 +616,16 @@ void Picker::paintBucket(QGraphicsSceneMouseEvent *event)
     }
 }
 
+Floor *Picker::topFloor() const
+{
+    return _topFloor;
+}
+
+void Picker::setTopFloor(Floor *topFloor)
+{
+    _topFloor = topFloor;
+}
+
 bool Picker::hasStarter() const
 {
     return _hasStarter;
@@ -634,6 +644,11 @@ Coords Picker::starterTile() const
 void Picker::setStarterTile(const Coords &starterTile)
 {
     _starterTile = starterTile;
+    _hasStarter = true;
+
+    if (_currentFloor == _topFloor)
+        (*_faces)[_starterTile.y][_starterTile.x]->setStarter(true);
+
 }
 
 void Picker::mousePressEvent(QGraphicsSceneMouseEvent *event)

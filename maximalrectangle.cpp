@@ -16,13 +16,12 @@ MaximalRectangle::MaximalRectangle()
 
 }
 
-MaximalRectangle::MaximalRectangle(Floor *top, int width, int height, QWidget *parent, QString project)
+MaximalRectangle::MaximalRectangle(Floor *top, int width, int height, QString project, MainWindow *parent)
     : _topFloor(top),
       _width(width),
       _height(height),
-      _parent(parent),
-      _project(project)
-
+      _project(project),
+      _parent(parent)
 {
     _currRectangle = 1;
     _plottedSomething = true;
@@ -35,12 +34,22 @@ void MaximalRectangle::generateMacro()
 {
     macroTypeDialog mtdialog;
 
+    if (!_parent->hasStarter())
+        mtdialog.disableStart();
+
     if (!mtdialog.exec())
         return;
 
-    _topLeft = mtdialog.fromTopLeftCorner();
+    if (mtdialog.fromTopLeftCorner())
+        _cursor = Coords(0,0);
+    else if (mtdialog.fromTopmostLeftmost())
+        _cursor = findTopmostLeftmost();
+    else if (mtdialog.fromStarter()){
+        _cursor = _parent->starterTile();
+    }
 
     plotSite();
+
     generateCommands();
     /*QString currDir = QDir::currentPath();
     std::cout << currDir.toStdString() << std::endl;*/
@@ -195,7 +204,7 @@ void MaximalRectangle::updateCache(Floor *f, int x, Key d)
     }
 }
 
-Coords MaximalRectangle::findStart()
+Coords MaximalRectangle::findTopmostLeftmost()
 {
     Floor *f = _topFloor;
     while (f != nullptr){
@@ -209,11 +218,6 @@ Coords MaximalRectangle::findStart()
 
 void MaximalRectangle::generateCommands()
 {
-    if (_topLeft)
-        _cursor = Coords(0,0);
-    else
-        _cursor = findStart();
-
     Floor *f = _topFloor;
     while (f != nullptr){
         //std::cout << "cursor starting at " << _cursor << std::endl;
@@ -423,8 +427,6 @@ void MaximalRectangle::counterBfs2(Floor *f)
         for(int j = 0; j < _width; j++)
             f->tiles()[i][j].bfs = false;
 }
-
-
 
 
 /* This is used to calculate area generally, the only time

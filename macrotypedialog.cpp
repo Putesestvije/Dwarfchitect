@@ -17,3 +17,18 @@ bool macroTypeDialog::fromTopLeftCorner()
 {
     return ui->topLeftCorner->isChecked();
 }
+
+bool macroTypeDialog::fromTopmostLeftmost()
+{
+    return ui->topmostLeftmost->isChecked();
+}
+
+bool macroTypeDialog::fromStarter()
+{
+    return ui->starter->isChecked();
+}
+
+void macroTypeDialog::disableStart()
+{
+    ui->starter->setEnabled(false);
+}

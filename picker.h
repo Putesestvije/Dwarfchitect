@@ -41,6 +41,9 @@ public:
     bool hasStarter() const;
     void setHasStarter(bool hasStarter);
 
+    Floor *topFloor() const;
+    void setTopFloor(Floor *topFloor);
+
 signals:
     void changesMadeToModel();
     void undo();
